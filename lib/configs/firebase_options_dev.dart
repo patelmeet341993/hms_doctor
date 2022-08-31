@@ -21,15 +21,9 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for ios - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return ios;
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -52,13 +46,42 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: "AIzaSyC1RuC3Erxei0GkyMs52fn-fwGeTkebBvE",
-    appId: "1:864011699942:web:4167355a306adcca86dd27",
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: "AIzaSyBGxwquKhIUlktfyQoaQb_WPL7v3D8KQxg",
+    appId: "1:864011699942:android:9e87ac8566c2d1cb86dd27",
     messagingSenderId: "864011699942",
     projectId: "hospital-management-dev",
     authDomain: "hospital-management-dev.firebaseapp.com",
     storageBucket: "hospital-management-dev.appspot.com",
-    measurementId: "G-MQJQPR16KH",
+    measurementId: "G-4B5PGVKLCD",
+    androidClientId: "864011699942-on8dp35o3fif7av06hr450aqquogeev0.apps.googleusercontent.com",
+    iosClientId: "864011699942-qlbffg1no8vje9ili9ceqs8qoca2n3a8.apps.googleusercontent.com",
+    iosBundleId: "com.friendlyitsolution.doctor",
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: "AIzaSyA74m7A5vkKjf4fBzbnhuoZi3MbPjQ3oHQ",
+    appId: "1:864011699942:ios:aa2362e090fc087786dd27",
+    messagingSenderId: "864011699942",
+    projectId: "hospital-management-dev",
+    authDomain: "hospital-management-dev.firebaseapp.com",
+    storageBucket: "hospital-management-dev.appspot.com",
+    measurementId: "G-4B5PGVKLCD",
+    androidClientId: "864011699942-on8dp35o3fif7av06hr450aqquogeev0.apps.googleusercontent.com",
+    iosClientId: "864011699942-qlbffg1no8vje9ili9ceqs8qoca2n3a8.apps.googleusercontent.com",
+    iosBundleId: "com.friendlyitsolution.doctor",
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: "AIzaSyC1RuC3Erxei0GkyMs52fn-fwGeTkebBvE",
+    appId: "1:864011699942:web:9b5006b8ccedff8886dd27",
+    messagingSenderId: "864011699942",
+    projectId: "hospital-management-dev",
+    authDomain: "hospital-management-dev.firebaseapp.com",
+    storageBucket: "hospital-management-dev.appspot.com",
+    measurementId: "G-4B5PGVKLCD",
+    androidClientId: "864011699942-on8dp35o3fif7av06hr450aqquogeev0.apps.googleusercontent.com",
+    iosClientId: "864011699942-qlbffg1no8vje9ili9ceqs8qoca2n3a8.apps.googleusercontent.com",
+    iosBundleId: "com.friendlyitsolution.doctor",
   );
 }
