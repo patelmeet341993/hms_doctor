@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/logger_service.dart';
@@ -44,11 +45,13 @@ class NavigationController {
     //   return null;
     // }
 
-    if(!["/", SplashScreen.routeName].contains(settings.name) && NavigationController.checkDataAndNavigateToSplashScreen()) {
-      return null;
+    if(kIsWeb) {
+      if(!["/", SplashScreen.routeName].contains(settings.name) && NavigationController.checkDataAndNavigateToSplashScreen()) {
+        return null;
+      }
     }
 
-    Log().d("Not First Page");
+    Log().d("First Page:$isFirst");
     Widget? page;
 
     switch (settings.name) {
