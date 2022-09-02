@@ -1,3 +1,5 @@
+import 'package:doctor/views/common/components/common_button.dart';
+import 'package:doctor/views/diagnosis/screens/diagnosis_form.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -11,15 +13,22 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Home Screen"),
-        ),
-        body: Center(
-          child: Text("Home Body"),
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Home Screen"),
       ),
+      body: getMyBody(),
     );
   }
+  Widget getMyBody(){
+    return Row(
+      children: [
+        CommonButtonWithArrow(text: "diagnosisScreen",onPressed: (){
+          Navigator.pushNamed(context, DiagnosisForm.routeName);
+        },),
+
+      ],
+    );
+  }
+
 }

@@ -1,3 +1,4 @@
+import 'package:doctor/views/diagnosis/screens/diagnosis_form.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -71,6 +72,12 @@ class NavigationController {
         page = const HomeScreen();
         break;
       }
+
+      case DiagnosisForm.routeName: {
+        page = const DiagnosisForm();
+        break;
+      }
+
     }
 
     if (page != null) {

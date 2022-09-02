@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
-import 'authentication/login_screen.dart';
 import 'homescreen/homescreen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -25,7 +24,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
     }
     else {
-      Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
+      Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
+      //Navigator.pushNamedAndRemoveUntil(context, LoginScreen.routeName, (route) => false);
     }
   }
 
