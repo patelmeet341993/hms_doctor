@@ -7,7 +7,7 @@ class CommonButtonWithArrow extends StatelessWidget {
   final bool isForwardArrowVisible;
   final double fontSize;
 
-  CommonButtonWithArrow(
+  const CommonButtonWithArrow(
       {
         this.onPressed,
         required this.text,
@@ -21,7 +21,7 @@ class CommonButtonWithArrow extends StatelessWidget {
     return MaterialButton(
       onPressed: onPressed,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10,horizontal:0 ),
+        padding: const EdgeInsets.symmetric(vertical: 10,horizontal:0 ),
         decoration: BoxDecoration(
             color:backgroundColor,
             borderRadius: BorderRadius.circular(30)
@@ -29,11 +29,11 @@ class CommonButtonWithArrow extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(width: 8,),
+            const SizedBox(width: 8,),
             Padding(
-              padding:  EdgeInsets.symmetric(horizontal: 30),
+              padding:  const EdgeInsets.symmetric(horizontal: 30),
               child: Text(
-                "$text",
+                text,
                 style:  TextStyle(
                     fontSize: fontSize,
                     color: Colors.blue
@@ -41,7 +41,8 @@ class CommonButtonWithArrow extends StatelessWidget {
               ),
             ),
             Visibility(
-              child: Padding(
+              visible: isForwardArrowVisible,
+              child: const Padding(
                 padding:  EdgeInsets.only(right: 4.0),
                 child: Icon(
                   Icons.arrow_forward_ios_outlined,
@@ -49,7 +50,6 @@ class CommonButtonWithArrow extends StatelessWidget {
                   size: 20,
                 ),
               ),
-              visible: isForwardArrowVisible,
             )
           ],
         ),
