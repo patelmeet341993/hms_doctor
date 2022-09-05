@@ -213,7 +213,7 @@ class AppTheme {
         secondaryVariant: Styles.lightSecondaryVariant,
         onSecondary: Colors.white,
         surface: const Color(0xffe2e7f1),
-        background: const Color(0xfff3f4f7),
+        background: const Color(0xfff0f0f0),
         onBackground: Styles.lightTextColor,
     ),
     cardTheme: CardTheme(
