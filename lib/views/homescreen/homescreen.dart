@@ -46,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
             activeIconData: FontAwesomeIcons.list,
             iconData: FontAwesomeIcons.list,
             //activeIcon: Icon(FontAwesomeIcons.list,size: 15,color: themeData.colorScheme.primary)
-
           ),
           FxBottomNavigationBarItem(
             page: const DiagnosisForm(),

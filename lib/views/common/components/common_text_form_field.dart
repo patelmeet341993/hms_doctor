@@ -29,11 +29,8 @@ class CommonTextFormField extends StatelessWidget {
               color: Colors.transparent,
             ),
             borderRadius: BorderRadius.circular(8)),
-        hintText: '$hintText',
+        hintText: hintText??"",
         filled: true,
-
-
-
       ),
 
 

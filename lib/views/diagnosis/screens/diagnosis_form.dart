@@ -37,15 +37,13 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             getPatientInfo(),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Form(
               key: _formKey,
               child: Column(
                 children: [
 
                   CommonTextFormField(controller: diagnosisTextController),
-
-
                 ],
               ),
 
@@ -87,8 +85,6 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
       children: [
         Text("$key : ",style: themeData.textTheme.bodyText1,),
         Text(value,style: themeData.textTheme.bodyText1?.merge(TextStyle(color: themeData.colorScheme.secondary))),
-        //CommonText(text: "$key : ",color: themeData.primaryColor),
-       // CommonText(text: value , color: themeData.,),
       ],
     );
   }
