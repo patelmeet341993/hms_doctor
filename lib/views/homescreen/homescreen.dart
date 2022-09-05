@@ -1,6 +1,11 @@
 import 'package:doctor/views/common/components/common_button.dart';
 import 'package:doctor/views/diagnosis/screens/diagnosis_form.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../controllers/authentication_controller.dart';
+import '../../models/admin_user_model.dart';
+import '../../providers/admin_user_provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../packages/flux/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
@@ -26,6 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      actions: [
+        IconButton(
+          onPressed: () {
+            AuthenticationController().logout(context: context);
+          },
+          icon: Icon(Icons.logout),
+        )
+      ],
       body: FxBottomNavigationBar(
         containerDecoration: BoxDecoration(
           color: themeData.colorScheme.background,
@@ -51,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
             page: const DiagnosisForm(),
             activeIconData: FontAwesomeIcons.stethoscope,
             iconData: FontAwesomeIcons.stethoscope,
-
 
           ),
           FxBottomNavigationBarItem(
