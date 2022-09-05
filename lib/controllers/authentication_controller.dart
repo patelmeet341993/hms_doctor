@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../configs/app_strings.dart';
 import '../configs/constants.dart';
 import '../models/admin_user_model.dart';
 import '../providers/admin_user_provider.dart';
@@ -67,7 +68,7 @@ class AuthenticationController {
     }
   }
   
-  Future<bool> loginAdminUserWithUsernameAndPassword({required BuildContext context, required String userName, required String password, List<String> userTypes = const [AdminUserType.admin, AdminUserType.reception],}) async {
+  Future<bool> loginAdminUserWithUsernameAndPassword({required BuildContext context, required String userName, required String password, List<String> userTypes = AppConstants.userTypesForLogin,}) async {
     bool isLoginSuccess = false;
 
     if(userName.isEmpty || password.isEmpty) {
@@ -75,9 +76,17 @@ class AuthenticationController {
       return isLoginSuccess;
     }
 
+    if(userTypes.isEmpty) {
+      userTypes.addAll(AppConstants.userTypesForLogin);
+    }
+
     AdminUserModel? adminUserModel;
 
-    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirestoreController().firestore.collection(FirebaseNodes.adminUsersCollection).where("role", whereIn: userTypes).where("username", isEqualTo: userName).get();
+    Query<Map<String, dynamic>> query = FirestoreController().firestore.collection(FirebaseNodes.adminUsersCollection).where("username", isEqualTo: userName);
+    if(userTypes.isNotEmpty) {
+      query = query.where("role", whereIn: userTypes);
+    }
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await query.get();
     if(querySnapshot.docs.isNotEmpty) {
       DocumentSnapshot<Map<String, dynamic>> docSnapshot = querySnapshot.docs.first;
       if((docSnapshot.data() ?? {}).isNotEmpty) {
