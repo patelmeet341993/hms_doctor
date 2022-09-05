@@ -1,5 +1,5 @@
 import 'package:doctor/configs/constants.dart';
-import 'package:doctor/views/common/components/common_text.dart';
+import 'package:doctor/views/common/components/common_text_form_field.dart';
 import 'package:doctor/views/common/components/profile_picture_circle.dart';
 import 'package:flutter/material.dart';
 
@@ -15,33 +15,42 @@ class DiagnosisForm extends StatefulWidget {
 class _DiagnosisFormState extends State<DiagnosisForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController diagnosisTextController = TextEditingController();
+
+  late ThemeData themeData;
+
+
 
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: CommonText(text: "Diagnosis"),
-        ),
-        body: Container(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              getPatientInfo(),
-              Form(
-                key: _formKey,
-                child: Column(
-                  children: [
+    themeData = Theme.of(context);
 
-                  ],
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text("Diagnosis",style: themeData.textTheme.headline5,),
+      ),
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            getPatientInfo(),
+            SizedBox(height: 10,),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
 
+                  CommonTextFormField(controller: diagnosisTextController),
+
+
+                ],
               ),
-            ],
-          ),
+
+            ),
+          ],
         ),
       ),
     );
@@ -51,13 +60,35 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
     return Row(
       children: [
         ProfilePictureCircle(imageUrl: noUserImageUrl),
-        const SizedBox(width: 10,),
-        Column(
-          children: [
-            CommonText(text: "Name: patient Name"),
-
-          ],
+        const SizedBox(width: 20,),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              getKeyValueWidget(key: "Id" , value: "D0014352"),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  getKeyValueWidget(key: "Blood Group" , value: "B +"),
+                  getKeyValueWidget(key: "Weight" , value: "50 Kg"),
+                  Container(),
+                ],
+              ),
+            ],
+          ),
         ),
+      ],
+    );
+  }
+
+  Widget getKeyValueWidget({required String key , required String value}){
+    return Row(
+      children: [
+        Text("$key : ",style: themeData.textTheme.bodyText1,),
+        Text(value,style: themeData.textTheme.bodyText1?.merge(TextStyle(color: themeData.colorScheme.secondary))),
+        //CommonText(text: "$key : ",color: themeData.primaryColor),
+       // CommonText(text: value , color: themeData.,),
       ],
     );
   }
