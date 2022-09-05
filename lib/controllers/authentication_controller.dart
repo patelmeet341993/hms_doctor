@@ -66,7 +66,7 @@ class AuthenticationController {
     }
   }
   
-  Future<bool> loginAdminUserWithUsernameAndPassword({required BuildContext context, required String userName, required String password, String userType = AdminUserType.admin,}) async {
+  Future<bool> loginAdminUserWithUsernameAndPassword({required BuildContext context, required String userName, required String password, String userType = AdminUserType.doctor,}) async {
     bool isLoginSuccess = false;
 
     if(userName.isEmpty || password.isEmpty) {
