@@ -49,7 +49,6 @@ class ProfilePictureCircle extends StatelessWidget {
             );
           },
         ),
-
         ),
     );
   }
