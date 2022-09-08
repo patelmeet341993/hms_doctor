@@ -1,13 +1,9 @@
-import 'package:doctor/views/homescreen/components/custom_bottom_navigation_bar.dart';
 import 'package:doctor/views/diagnosis/screens/diagnosis_form.dart';
+import 'package:doctor/views/homescreen/components/custom_bottom_navigation_bar.dart';
+import 'package:doctor/views/patients/screens/patient_list.dart';
+import 'package:doctor/views/profile/screens/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../../packages/flux/widgets/bottom_navigation_bar/bottom_navigation_bar.dart';
-import '../patients/screens/patient_list.dart';
-import '../profile/screens/profile_page.dart';
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "/HomeScreen";
@@ -30,21 +26,21 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget mainBody(){
     return CustomBottomNavigation(
       icons: const [
-        Icons.dashboard_outlined,
-        Icons.history,
-        Icons.file_copy_outlined
+        FontAwesomeIcons.list,
+        FontAwesomeIcons.stethoscope,
+        FontAwesomeIcons.user
       ],
       activeIcons: const [
-        Icons.dashboard,
-        Icons.history,
-        Icons.file_copy
+        FontAwesomeIcons.list,
+        FontAwesomeIcons.stethoscope,
+        FontAwesomeIcons.user
       ],
       screens: [
-        Container(child: const Text("Dashboard"),),
-        Container(child: const Text("History"),),
-        Container(child: const Text("Treatment"),),
+        PatientList(),
+        DiagnosisForm(),
+        ProfileScreen(),
       ],
-      titles: const ["Dashboard", "History", "Treatment"],
+      titles: const ["Patients", "Diagnosis", "Profile"],
       color: themeData.colorScheme.onBackground,
       activeColor: themeData.colorScheme.primary,
       navigationBackground: themeData.backgroundColor,
