@@ -1,8 +1,6 @@
-import 'package:doctor/models/visit_model/prescription/prescription_medicine_dose_model.dart';
-import 'package:doctor/models/visit_model/prescription/prescription_model.dart';
+import 'package:doctor/configs/app_strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../packages/flux/widgets/button/button.dart';
 import '../../../packages/flux/widgets/text/text.dart';
@@ -33,13 +31,6 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   List<bool> timingsBool = [true, false, true];
   List<AdvanceDoseModel> advanceDoseModels=[];
 
-  List<String> timeString =["Morning","Afternoon","Evening"],selectedTime=[];
-
-  Map<String, bool> beforeMealAfterMealValues = {
-    'Before Meal': false,
-    'After Meal': true,
-  };
-
   MedicineType medicineType = MedicineType.Medicine;
 
   @override
@@ -68,11 +59,11 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(),
-                    Text("Medicine",style: themeData.textTheme.headline5?.apply(color: themeData.primaryColor),),
+                    Text(AppStrings.medicine,style: themeData.textTheme.headline5?.apply(color: themeData.primaryColor),),
                     Container(),
                   ],
                 ),
-                Text("Type:",style: themeData.textTheme.headline6,),
+                Text(AppStrings.medicineType,style: themeData.textTheme.headline6,),
                 getMedicineType(),
                 getMedicineName(),
                 SizedBox(height: 10,),
@@ -84,7 +75,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                     isAdvanced=!isAdvanced;
                     mySetState();
                   },
-                  child: Text("Advance",style: TextStyle(
+                  child: Text(AppStrings.advance,style: TextStyle(
                     decoration: TextDecoration.underline,
                     color: Colors.blue,
                     fontSize: 14,
@@ -113,7 +104,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             Log().d("Value changed , $medicineType");
           },
         ),
-        Text("Medicine"),
+        Text(AppStrings.medicine),
         Radio<MedicineType>(
           value: MedicineType.Liquid,
           groupValue: medicineType,
@@ -125,7 +116,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
 
           },
         ),
-        Text("Liquid"),
+        Text(AppStrings.liquid),
         Radio<MedicineType>(
           value: MedicineType.Other,
           groupValue: medicineType,
@@ -136,7 +127,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             Log().d("Value changed , $medicineType");
           },
         ),
-        Text("Other"),
+        Text(AppStrings.other),
 
 
       ],
@@ -151,14 +142,14 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
           flex: 2,
           child: Column(
             children: [
-              Text("Name:",style: themeData.textTheme.headline6,),
+              Text(AppStrings.name,style: themeData.textTheme.headline6,),
               SizedBox(height: 5,),
               CommonTextFormField(
                 controller: medicineNameTextController,
-                hintText: "Enter medicine Name",
+                hintText: AppStrings.enterMedicineName,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return "Enter medicine name";
+                    return AppStrings.enterMedicineName;
                   }
                   return null;
                 },
@@ -170,7 +161,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
           flex: 1,
           child: Column(
             children: [
-              Text("Quantity:",style: themeData.textTheme.headline6,),
+              Text(AppStrings.quantity,style: themeData.textTheme.headline6,),
               SizedBox(height: 5,),
               SizedBox(
                   width:50,
@@ -182,7 +173,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                     ],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter quantity";
+                        return AppStrings.enterQuantity;
                       }
                       return null;
                     },
@@ -199,9 +190,9 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   Widget getMedicineInstruction(){
     return Row(
       children: [
-        Text("Instruction:",style: themeData.textTheme.headline6,),
+        Text(AppStrings.instructions,style: themeData.textTheme.headline6,),
         SizedBox(width: 5,),
-        Expanded(child: CommonTextFormField(controller: medicineNameTextController,hintText: "Enter extra Instruction",)),
+        Expanded(child: CommonTextFormField(controller: medicineNameTextController,hintText: AppStrings.enterExtraInstructions,)),
       ],
     );
   }
@@ -209,7 +200,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   Widget getMedicineTimings(){
     return Row(
       children: [
-        Text("Time:",style: themeData.textTheme.headline6,),
+        Text(AppStrings.time,style: themeData.textTheme.headline6,),
         SizedBox(width: 10,),
         Expanded(
           child: ToggleButtons(
@@ -230,7 +221,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             isSelected: timingsBool,
             onPressed: (int index) {
               timingsBool[index] = !timingsBool[index];
-              String title = index==0?"Morning":index==1?"Afetrnoon":"Evening";
+              String title = index==0?AppStrings.morning:index==1?AppStrings.afternoon:AppStrings.evening;
               if(timingsBool[index]){
                 advanceDoseModels.add(AdvanceDoseModel(title: title));
               }
@@ -241,9 +232,9 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
               mySetState();
             },
             children: <Widget>[
-              toggleButtonText(timeString[0]),
-              toggleButtonText(timeString[1]),
-              toggleButtonText(timeString[2]),
+              toggleButtonText(AppStrings.morning),
+              toggleButtonText(AppStrings.afternoon),
+              toggleButtonText(AppStrings.evening),
             ],
           ),
         ),
@@ -263,7 +254,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
       children: [
         Row(
           children:[
-              Text("Before Meal",style: themeData.textTheme.bodySmall,),
+              Text(AppStrings.beforeMeal,style: themeData.textTheme.bodySmall,),
               SizedBox(
                 width:35,
                 height:35,
@@ -276,7 +267,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                   },
                 ),
               ),
-              Text("Afetr Meal",style: themeData.textTheme.bodySmall,),
+              Text(AppStrings.afterMeal,style: themeData.textTheme.bodySmall,),
               SizedBox(
                 width:35,
                 height:35,
@@ -294,7 +285,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
         Expanded(
           child: Row(
             children: [
-              Text("Dosage:",style: themeData.textTheme.bodyLarge,),
+              Text(AppStrings.dosage,style: themeData.textTheme.bodyLarge,),
               SizedBox(width: 5,),
               SizedBox(
                   height:40,
@@ -307,7 +298,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                     ],
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return "Enter dose";
+                        return AppStrings.enterDosage;
                       }
                       return null;
                     },
@@ -364,7 +355,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             },
             elevation: 0,
             child: FxText.bodyMedium(
-              'Cancel',
+              AppStrings.cancel,
               color: themeData.primaryColor,
             ),
           ),
@@ -389,7 +380,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             elevation: 0,
             splashColor: themeData.colorScheme.onPrimary.withAlpha(60),
             child: FxText.bodyMedium(
-              'Done',
+              AppStrings.done,
               color: themeData.colorScheme.onPrimary,
             ),
           ),
