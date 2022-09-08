@@ -34,10 +34,10 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
+      /*appBar: AppBar(
         centerTitle: true,
         title: Text("Diagnosis",style: themeData.textTheme.headline5,),
-      ),
+      ),*/
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(

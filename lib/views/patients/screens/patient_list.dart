@@ -17,10 +17,10 @@ class _PatientListState extends State<PatientList> {
     themeData = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+     /* appBar: AppBar(
         centerTitle: true,
         title: Text("Patients",style: themeData.textTheme.headline5,),
-      ),
+      ),*/
       body: Container(
         padding: const EdgeInsets.all(10),
         child: Column(

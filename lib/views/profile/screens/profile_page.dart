@@ -19,23 +19,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
     themeData = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
+     /* appBar: AppBar(
         centerTitle: true,
         title: Text("Profile",style: themeData.textTheme.headline5,),
         actions: [
-          IconButton(
-            onPressed: () {
-              AuthenticationController().logout(context: context);
-            },
-            icon: const Icon(Icons.logout),
-          )
+
         ],
-      ),
+      ),*/
       body: Container(
         padding: const EdgeInsets.all(10),
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children:[]
+            children:[
+              IconButton(
+                onPressed: () {
+                  AuthenticationController().logout(context: context);
+                },
+                icon: const Icon(Icons.logout),
+              )
+            ]
         ),
       ),
     );
