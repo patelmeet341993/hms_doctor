@@ -8,6 +8,7 @@ class CommonTextFormField extends StatelessWidget {
   int? minLines;
   IconData? suffixIcon,prefixIcon;
   Function()? suffixOnTap,prefixOnTap;
+  String? Function(String?)? validator;
   List<TextInputFormatter> inputFormatter = [];
   TextInputType? keyboardType;
 
@@ -24,6 +25,7 @@ class CommonTextFormField extends StatelessWidget {
      this.prefixOnTap,
      this.inputFormatter = const [],
      this.keyboardType,
+     this.validator,
   }) : super(key: key);
 
   @override
@@ -69,6 +71,7 @@ class CommonTextFormField extends StatelessWidget {
           ),
         ):null,
       ),
+      validator: validator,
       inputFormatters: inputFormatter,
       maxLines: maxLines,
       minLines: minLines,
