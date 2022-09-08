@@ -1,5 +1,5 @@
-import 'package:doctor/packages/flux/extensions/string_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:doctor/packages/flux/extensions/string_extension.dart';
 
 import '../core/tuple.dart';
 

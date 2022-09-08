@@ -1,5 +1,7 @@
+import 'package:doctor/views/homescreen/components/custom_bottom_navigation_bar.dart';
 import 'package:doctor/views/diagnosis/screens/diagnosis_form.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -19,51 +21,43 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late ThemeData themeData;
 
-
   @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
+    return mainBody();
+  }
 
-    return Container(
-      color: themeData.backgroundColor,
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: FxBottomNavigationBar(
-          containerDecoration: BoxDecoration(
-            color: themeData.colorScheme.background,
-            borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-          ),
-          activeContainerColor: themeData.colorScheme.primary.withOpacity(.2),
-          fxBottomNavigationBarType: FxBottomNavigationBarType.containered,
-          showActiveLabel: false,
-          showLabel: false,
-          activeIconSize: 20,
-          iconSize: 20,
-          activeIconColor:  themeData.colorScheme.primary,
-          iconColor: themeData.colorScheme.onBackground,
-          itemList: [
-            FxBottomNavigationBarItem(
-              page: const PatientList(),
-              activeIconData: FontAwesomeIcons.list,
-              iconData: FontAwesomeIcons.list,
-              //activeIcon: Icon(FontAwesomeIcons.list,size: 15,color: themeData.colorScheme.primary)
-            ),
-            FxBottomNavigationBarItem(
-              page: const DiagnosisForm(),
-              activeIconData: FontAwesomeIcons.stethoscope,
-              iconData: FontAwesomeIcons.stethoscope,
-
-            ),
-            FxBottomNavigationBarItem(
-              page: const ProfileScreen(),
-              activeIconData: FontAwesomeIcons.idBadge,
-              iconData: FontAwesomeIcons.idBadge,
-
-            ),
-          ],
-        ),
-      ),
+  Widget mainBody(){
+    return CustomBottomNavigation(
+      icons: const [
+        Icons.dashboard_outlined,
+        Icons.history,
+        Icons.file_copy_outlined
+      ],
+      activeIcons: const [
+        Icons.dashboard,
+        Icons.history,
+        Icons.file_copy
+      ],
+      screens: [
+        Container(child: const Text("Dashboard"),),
+        Container(child: const Text("History"),),
+        Container(child: const Text("Treatment"),),
+      ],
+      titles: const ["Dashboard", "History", "Treatment"],
+      color: themeData.colorScheme.onBackground,
+      activeColor: themeData.colorScheme.primary,
+      navigationBackground: themeData.backgroundColor,
+      brandTextColor: themeData.colorScheme.onBackground,
+      initialIndex: 2,
+      splashColor: themeData.splashColor,
+      highlightColor: themeData.highlightColor,
+      backButton: Container(),
+      floatingActionButton: Container(),
+      iconSize: 20,
+      activeIconSize: 20,
+      verticalDividerColor: themeData.dividerColor,
+      bottomNavigationElevation: 8,
     );
   }
 }
