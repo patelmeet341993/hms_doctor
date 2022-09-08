@@ -65,7 +65,6 @@ dependencies:
   fluttertoast: ^8.0.9
   cached_network_image: ^3.2.1
   shimmer: ^2.0.0
-  flutter_svg: ^1.1.4
   font_awesome_flutter: ^10.1.0
 
 
