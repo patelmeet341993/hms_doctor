@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../controllers/authentication_controller.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
 
@@ -20,6 +22,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text("Profile",style: themeData.textTheme.headline5,),
+        actions: [
+          IconButton(
+            onPressed: () {
+              AuthenticationController().logout(context: context);
+            },
+            icon: const Icon(Icons.logout),
+          )
+        ],
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
