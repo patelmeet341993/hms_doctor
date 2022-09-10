@@ -4,6 +4,8 @@ import 'package:doctor/views/common/components/profile_picture_circle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../../models/visit_model/prescription/prescription_model.dart';
+import '../../../utils/logger_service.dart';
 import 'get_medicine_dialog.dart';
 
 class DiagnosisForm extends StatefulWidget {
@@ -20,6 +22,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController diagnosisTextController = TextEditingController();
   TextEditingController dietInstructionTextController = TextEditingController();
+  List<PrescriptionModel> prescriptionList=[];
 
   late ThemeData themeData;
 
@@ -54,14 +57,13 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
                   children: [
                     getTextFieldWithTitle(title: "Description",controller: diagnosisTextController),
                     const SizedBox(height: 10,),
-                    getTextFieldWithTitle(title: "Diet instructions",controller: dietInstructionTextController),
-                    const SizedBox(height: 10,),
+                    /*getTextFieldWithTitle(title: "Diet instructions",controller: dietInstructionTextController),
+                    const SizedBox(height: 10,),*/
                     getMedicineDetails(),
                     const SizedBox(height: 10,),
                     getPrescriptionTable(),
                   ],
                 ),
-
               ),
             ],
           ),
@@ -96,27 +98,6 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
     );
   }
 
-  Widget getTextFieldWithTitle({required String title,required TextEditingController controller}){
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(title,style: themeData.textTheme.headline6,),
-        const SizedBox(height: 4,),
-        CommonTextFormField(controller: controller,maxLines: 5,minLines: 5,),
-
-      ],
-    );
-  }
-
-  Widget getKeyValueWidget({required String key , required String value}){
-    return Row(
-      children: [
-        Text("$key : ",style: themeData.textTheme.bodyText1,),
-        Text(value,style: themeData.textTheme.bodyText1?.merge(TextStyle(color: themeData.primaryColor))),
-      ],
-    );
-  }
-
   Widget getMedicineDetails() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,10 +112,9 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
                   return const GetMedicineDialog();
             });
             if (list[0] == true) {
+              prescriptionList.add(list[1]);
               setState(() {});
             }
-
-
           },
           child: Container(
             padding: const EdgeInsets.all(5),
@@ -165,29 +145,29 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
           DataColumn(label:Text("Time",style: themeData.textTheme.bodyText1,)),
           DataColumn(label:Text("Instruction",style: themeData.textTheme.bodyText1,)),
       ],
-        rows: [
-          getDataRow(name: "paracetamol", quantity: "10", time: "Morning,Afternoon,Evening", instruction: "take only when have fever"),
-          getDataRow(name: "crux", quantity: "50 ml", time: "Morning,Afternoon,Evening", instruction: "after meal"),
-
-
-        ],
+        rows: List.generate(prescriptionList.length, (index) => getDataRow(prescriptionModel: prescriptionList[index]))
       ),
     );
   }
 
-  DataRow getDataRow({required String name,required String quantity,required String time,required String instruction}){
+  DataRow getDataRow({required PrescriptionModel prescriptionModel}){
+    String time="";
+    for (var element in prescriptionModel.doses) {
+      time += "${element.doseTime},";
+    }
+    Log().d("total dose string: ${prescriptionModel.totalDose + (prescriptionModel.medicineType==MedicineType.syrup?" ml":"")}");
     return DataRow(
         cells: [
           DataCell(SizedBox(
             width: 80,
-            child: Text(name,
+            child: Text(prescriptionModel.medicineName,
               style: themeData.textTheme.bodySmall,
               overflow: TextOverflow.visible,
               softWrap: true,),
           ),),
           DataCell(SizedBox(
             width: 50,
-            child: Text(quantity,
+            child: Text(prescriptionModel.totalDose,
               style: themeData.textTheme.bodySmall,
               overflow: TextOverflow.visible,
               softWrap: true,),
@@ -201,7 +181,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
           ),),
           DataCell(SizedBox(
             width: 80,
-            child: Text(instruction,
+            child: Text(prescriptionModel.instructions,
               style: themeData.textTheme.bodySmall,
               overflow: TextOverflow.visible,
               softWrap: true,),
@@ -209,6 +189,27 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
         ]
     );
   }
+
+  Widget getTextFieldWithTitle({required String title,required TextEditingController controller}){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title,style: themeData.textTheme.headline6,),
+        const SizedBox(height: 4,),
+        CommonTextFormField(controller: controller,maxLines: 5,minLines: 5,),
+      ],
+    );
+  }
+
+  Widget getKeyValueWidget({required String key , required String value}){
+    return Row(
+      children: [
+        Text("$key : ",style: themeData.textTheme.bodyText1,),
+        Text(value,style: themeData.textTheme.bodyText1?.merge(TextStyle(color: themeData.primaryColor))),
+      ],
+    );
+  }
+
 
 }
 
