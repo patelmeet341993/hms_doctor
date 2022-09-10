@@ -6,20 +6,16 @@ class AppStrings {
 
   //diagnosis Page
   static const String medicine = "Medicine";
-  static const String liquid = "Liquid";
-  static const String other = "Other";
   static const String medicineType = "Type";
   static const String advance = "Advance";
   static const String name = "Name";
   static const String quantity = "Quantity";
+  static const String quantityInML = "Quantity in ml";
   static const String enterQuantity = "Enter quantity";
   static const String enterMedicineName = "Enter medicine name";
   static const String instructions = "Instructions";
   static const String enterExtraInstructions = "Enter extra instructions";
   static const String time = "Time";
-  static const String morning = "Morning";
-  static const String afternoon = "Afternoon";
-  static const String evening = "Evening";
   static const String beforeMeal = "Before meal";
   static const String afterMeal = "After meal";
   static const String dosage = "Dosage";
