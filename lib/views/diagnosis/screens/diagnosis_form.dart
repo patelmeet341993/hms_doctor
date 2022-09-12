@@ -1,5 +1,6 @@
 import 'package:doctor/configs/constants.dart';
 import 'package:doctor/views/common/components/common_text_form_field.dart';
+import 'package:doctor/views/common/components/get_key_value_widget.dart';
 import 'package:doctor/views/common/components/profile_picture_circle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -87,12 +88,12 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              getKeyValueWidget(key: "Id" , value: "D0014352"),
+              GetKeyValueWidget(keyString: "Id" , value: "D0014352"),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  getKeyValueWidget(key: "Blood Group" , value: "B +"),
-                  getKeyValueWidget(key: "Weight" , value: "50 Kg"),
+                  GetKeyValueWidget(keyString: "Blood Group" , value: "B +"),
+                  GetKeyValueWidget(keyString: "Weight" , value: "50 Kg"),
                   Container(),
                 ],
               ),
@@ -193,15 +194,6 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
         Text(title,style: themeData.textTheme.headline6,),
         const SizedBox(height: 4,),
         CommonTextFormField(controller: controller,maxLines: 5,minLines: 5,),
-      ],
-    );
-  }
-
-  Widget getKeyValueWidget({required String key , required String value}){
-    return Row(
-      children: [
-        Text("$key : ",style: themeData.textTheme.bodyText1,),
-        Text(value,style: themeData.textTheme.bodyText1?.merge(TextStyle(color: themeData.primaryColor))),
       ],
     );
   }
