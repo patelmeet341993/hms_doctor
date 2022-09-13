@@ -1,9 +1,11 @@
+import 'package:doctor/configs/app_strings.dart';
 import 'package:doctor/packages/flux/flutx.dart';
 import 'package:doctor/views/common/components/get_key_value_widget.dart';
 import 'package:flutter/material.dart';
 
 class PatientList extends StatefulWidget {
-  const PatientList({Key? key}) : super(key: key);
+  final String title;
+  const PatientList({Key? key, this.title = AppStrings.patients}) : super(key: key);
 
   @override
   State<PatientList> createState() => _PatientListState();
@@ -19,10 +21,11 @@ class _PatientListState extends State<PatientList> {
     themeData = Theme.of(context);
 
     return Scaffold(
-     /* appBar: AppBar(
-        centerTitle: true,
-        title: Text("Patients",style: themeData.textTheme.headline5,),
-      ),*/
+     appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: false,
+        elevation: 0,
+      ),
       body: SingleChildScrollView(
         child: Container(
           padding: const EdgeInsets.all(10),

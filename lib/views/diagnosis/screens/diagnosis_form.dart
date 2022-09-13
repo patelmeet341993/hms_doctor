@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import '../../../configs/app_strings.dart';
 import '../../../models/visit_model/prescription/prescription_model.dart';
 import '../../../packages/flux/widgets/button/button.dart';
@@ -15,8 +16,9 @@ import 'get_medicine_dialog.dart';
 
 class DiagnosisForm extends StatefulWidget {
   static const String routeName = "/DiagnosisForm";
+  final String title;
 
-  const DiagnosisForm({Key? key}) : super(key: key);
+  const DiagnosisForm({Key? key, this.title = AppStrings.diagnosis}) : super(key: key);
 
   @override
   State<DiagnosisForm> createState() => _DiagnosisFormState();
@@ -45,10 +47,11 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      /*appBar: AppBar(
-        centerTitle: true,
-        title: Text("Diagnosis",style: themeData.textTheme.headline5,),
-      ),*/
+      appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: false,
+        elevation: 0,
+      ),
       body: Container(
         padding: const EdgeInsets.all(10),
         child: SingleChildScrollView(

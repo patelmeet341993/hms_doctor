@@ -3,6 +3,7 @@ import 'package:doctor/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../configs/app_strings.dart';
 import '../../../controllers/authentication_controller.dart';
 import '../../../packages/flux/styles/shadow.dart';
 import '../../../packages/flux/widgets/card/card.dart';
@@ -10,7 +11,8 @@ import '../../../packages/flux/widgets/container/container.dart';
 import '../../../packages/flux/widgets/text/text.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({Key? key}) : super(key: key);
+  final String title;
+  const ProfileScreen({Key? key, this.title = AppStrings.profile}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -24,13 +26,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     themeData = Theme.of(context);
 
     return Scaffold(
-     /* appBar: AppBar(
-        centerTitle: true,
-        title: Text("Profile",style: themeData.textTheme.headline5,),
-        actions: [
-
-        ],
-      ),*/
+     appBar: AppBar(
+        title: Text(widget.title),
+        centerTitle: false,
+        elevation: 0,
+      ),
       body: Container(
         padding: const EdgeInsets.all(10),
         child: Column(
