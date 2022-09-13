@@ -45,7 +45,7 @@ class AuthenticationController {
         if(adminUserModel.username == newModel.username && adminUserModel.password == newModel.password) {
           adminUserProvider.setAdminUserModel(newModel);
           if(adminUserModel != newModel) {
-            SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, jsonEncode(newModel.toMap()));
+            SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, jsonEncode(newModel.toMap(toJson: true)));
           }
           return newModel;
         }
@@ -100,7 +100,7 @@ class AuthenticationController {
     
     AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
     adminUserProvider.setAdminUserModel(adminUserModel, isNotify: false);
-    SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, adminUserModel != null ? jsonEncode(adminUserModel.toMap()) : "");
+    SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, adminUserModel != null ? jsonEncode(adminUserModel.toMap(toJson: true)) : "");
 
     if(isLoginSuccess) {
       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
