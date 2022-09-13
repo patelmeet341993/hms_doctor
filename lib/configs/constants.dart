@@ -57,5 +57,17 @@ class PaymentStatus {
 
 }
 
+class HomeScreenComponentsList {
+  final List<HomeScreenComponentModel> _masterOptions = [
+    const HomeScreenComponentModel(icon: FontAwesomeIcons.list, activeIcon: FontAwesomeIcons.list, screen: PatientList(title: AppStrings.patients), title: AppStrings.patients),
+    const HomeScreenComponentModel(icon: FontAwesomeIcons.stethoscope, activeIcon: FontAwesomeIcons.stethoscope, screen: DiagnosisForm(title: AppStrings.diagnosis), title: AppStrings.diagnosis),
+    const HomeScreenComponentModel(icon: FontAwesomeIcons.user, activeIcon: FontAwesomeIcons.user, screen: ProfileScreen(title: AppStrings.profile), title: AppStrings.profile),
+  ];
+
+  List<HomeScreenComponentModel> getHomeScreenComponentsRolewise(String role) {
+    return _masterOptions;
+  }
+}
+
 //url
 const String noUserImageUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
