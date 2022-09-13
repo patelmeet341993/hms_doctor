@@ -1,4 +1,12 @@
 //App Version
+import 'package:doctor/configs/app_strings.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../views/common/models/home_screen_component_model.dart';
+import '../views/diagnosis/screens/diagnosis_form.dart';
+import '../views/patients/screens/patient_list.dart';
+import '../views/profile/screens/profile_page.dart';
+
 const String app_version = "1.0.0";
 
 //Shared Preference Keys
@@ -9,6 +17,8 @@ class SharePrefrenceKeys {
 
 class AppConstants {
   static const List<String> userTypesForLogin = [AdminUserType.doctor];
+
+  static String hospitalId = "Hospital_1";
 }
 
 class PatientGender {
