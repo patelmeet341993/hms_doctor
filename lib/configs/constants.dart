@@ -54,4 +54,8 @@ class PaymentModes {
 class PaymentStatus {
   static const String pending = "Pending";
   static const String paid = "Paid";
+
 }
+
+//url
+const String noUserImageUrl = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
