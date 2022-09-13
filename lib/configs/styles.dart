@@ -16,9 +16,13 @@ class Styles {
   static const Color lightTextColor = Color(0xff495057);
   static const Color darkTextColor = Color(0xffffffff);
 
-  static const Color lightBackgroundColor = Color(0xffffffff);
+  static Color lightBackgroundColor = Colors.grey.shade100;
   static const Color darkBackgroundColor = Color(0xffffffff);
 
   static const Color lightAppBarColor = Color(0xffffffff);
   static const Color darkAppBarColor = Color(0xff2e343b);
+
+  //region CustomColors
+  static const Color cardColor = Color(0xfff0f0f0);
+  //endregion//
 }

@@ -2,6 +2,10 @@ class AppStrings {
   static const String givenUserAlreadyExist = "User with given UserName already exist";
   static const String usernameOrPasswordIsEmpty = "UserName or password is empty";
   static const String login = "Login";
+  static const String patients = "Patients";
+  static const String diagnosis = "Diagnosis";
+  static const String profile = "Profile";
+  static const String user_type_string_in_login_screen = "Doctor";
 
 
   //diagnosis Page
