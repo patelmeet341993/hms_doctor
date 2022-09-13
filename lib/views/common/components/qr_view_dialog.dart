@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import 'common_button.dart';
 import 'common_text.dart';
 
 class QRCodeView extends StatelessWidget {
