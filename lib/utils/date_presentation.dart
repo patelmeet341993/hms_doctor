@@ -101,4 +101,5 @@ abstract class DatePresentation {
     String formattedDate = DateFormat('EEE dd, MMMM yy – hh:mm a').format(date.toDate());
     return formattedDate;
   }
+
 }
