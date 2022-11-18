@@ -32,6 +32,7 @@ class PharmaBillingModel {
 
     List<PharmaBillingItemModel> itemsList = <PharmaBillingItemModel>[];
     List<Map> itemMapList = ParsingHelper.parseListMethod<dynamic, Map>(map['items']);
+
     for (Map itemMap in itemMapList) {
       Map<String, dynamic> newItemMap = ParsingHelper.parseMapMethod<dynamic, dynamic, String, dynamic>(itemMap);
       if(newItemMap.isNotEmpty) {
