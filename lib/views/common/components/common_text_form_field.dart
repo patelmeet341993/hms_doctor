@@ -6,6 +6,7 @@ class CommonTextFormField extends StatelessWidget {
   String? hintText;
   int? maxLines;
   int? minLines;
+  bool transparent=false;
   IconData? suffixIcon,prefixIcon;
   Function()? suffixOnTap,prefixOnTap;
   String? Function(String?)? validator;
@@ -23,6 +24,7 @@ class CommonTextFormField extends StatelessWidget {
      this.suffixOnTap,
      this.prefixIcon,
      this.prefixOnTap,
+     this.transparent=false,
      this.inputFormatter = const [],
      this.keyboardType,
      this.validator,
@@ -38,7 +40,8 @@ class CommonTextFormField extends StatelessWidget {
       keyboardType: keyboardType,
       decoration: InputDecoration(
         isDense: true,
-        contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+        fillColor: transparent?Colors.transparent:themeData.inputDecorationTheme.fillColor,
+        contentPadding: const EdgeInsets.symmetric(vertical: 5,horizontal: 5),
         border: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.transparent,
