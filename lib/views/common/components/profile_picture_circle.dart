@@ -1,17 +1,16 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:hms_models/hms_models.dart';
 
 class ProfilePictureCircle extends StatelessWidget {
   final String imageUrl;
   final double height;
   final double width;
-  ThemeData themeData = ThemeData();
-  ProfilePictureCircle({Key? key,required this.imageUrl,this.width=50,this.height=50}) : super(key: key);
+
+  const ProfilePictureCircle({Key? key,required this.imageUrl,this.width=50,this.height=50}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    themeData = Theme.of(context);
+    ThemeData themeData = Theme.of(context);
 
     return Container(
       width: width,
@@ -31,7 +30,7 @@ class ProfilePictureCircle extends StatelessWidget {
               child: Container(
                 alignment: Alignment.center,
                 color: themeData.secondaryHeaderColor,
-                child: Icon(
+                child: const Icon(
                   Icons.image,
                   size: 40,
                 ),

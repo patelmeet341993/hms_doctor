@@ -1,10 +1,9 @@
 import 'package:flutter/foundation.dart';
-
-import '../models/admin_user_model.dart';
+import 'package:hms_models/models/admin_user/admin_user_model.dart';
 
 class AdminUserProvider extends ChangeNotifier {
+  //region Logged In Admin User Model
   AdminUserModel? _adminUserModel;
-  String _adminUserId = "";
 
   AdminUserModel? getAdminUserModel() {
     if(_adminUserModel != null) {
@@ -31,6 +30,10 @@ class AdminUserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  //endregion
+
+  //region Logged In Admin User Id
+  String _adminUserId = "";
 
   String get adminUserId => _adminUserId;
 
@@ -40,4 +43,5 @@ class AdminUserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+  //endregion
 }

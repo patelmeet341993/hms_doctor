@@ -1,17 +1,16 @@
-import 'package:doctor/configs/constants.dart';
+import 'package:doctor/configs/app_theme.dart';
+import 'package:doctor/providers/admin_user_provider.dart';
+import 'package:doctor/views/common/components/common_text.dart';
 import 'package:doctor/views/common/components/common_text_form_field.dart';
-import 'package:doctor/views/common/components/get_key_value_widget.dart';
+import 'package:doctor/views/common/components/modal_progress_hud.dart';
 import 'package:doctor/views/common/components/profile_picture_circle.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../../../configs/app_strings.dart';
-import '../../../models/visit_model/prescription/prescription_model.dart';
 import '../../../packages/flux/widgets/button/button.dart';
 import '../../../packages/flux/widgets/text/text.dart';
-import '../../../utils/logger_service.dart';
 import 'get_medicine_dialog.dart';
 
 class DiagnosisForm extends StatefulWidget {
@@ -28,13 +27,96 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormState> _billFormKey = GlobalKey<FormState>();
+
+  bool isLoading = false;
+  double price = 0,discount = 0,total = 0;
+
   TextEditingController diagnosisTextController = TextEditingController();
-  TextEditingController dietInstructionTextController = TextEditingController();
+  TextEditingController instructionTextController = TextEditingController();
+  TextEditingController complaintsTextController = TextEditingController();
   TextEditingController billTextController = TextEditingController();
   TextEditingController discountTextController = TextEditingController();
+
+  TextEditingController heightTextController = TextEditingController();
+  TextEditingController weightTextController = TextEditingController();
+  TextEditingController pulseTextController = TextEditingController();
+  TextEditingController temperatureTextController = TextEditingController();
+  TextEditingController bPSystolicTextController = TextEditingController();
+  TextEditingController bPDiastolicTextController = TextEditingController();
+  TextEditingController bloodGroupTextController = TextEditingController();
+
+
   List<PrescriptionModel> prescriptionList=[];
 
   late ThemeData themeData;
+
+  Future<void> uploadVisit() async {
+    AdminUserModel? doctor = Provider.of<AdminUserProvider>(context,listen: false).getAdminUserModel();
+
+    if(doctor == null){
+      MyToast.showError(context: context, msg: "Please Login to create visit",);
+      return;
+    }
+
+    Timestamp time = Timestamp.now();
+
+    VitalsModel vitalsModel = VitalsModel(
+      height: ParsingHelper.parseDoubleMethod(heightTextController.text),
+      weight: ParsingHelper.parseDoubleMethod(weightTextController.text),
+      pulse: ParsingHelper.parseDoubleMethod(pulseTextController.text),
+      temperature: ParsingHelper.parseDoubleMethod(temperatureTextController.text),
+      bpSystolic: ParsingHelper.parseDoubleMethod(bPSystolicTextController.text),
+      bpDiastolic: ParsingHelper.parseDoubleMethod(bPDiastolicTextController.text),
+      bloodGroup: bloodGroupTextController.text,
+    );
+
+    PatientMetaModel patientMetaModel = PatientMetaModel(
+      id: "d86460602a8411edb04ead939aa5bd25",
+      name: "Viren",
+      gender: "Male",
+      bloodGroup: "B+",
+      totalVisits: 120,
+      userMobile: "9726540099",
+      dateOfBirth: Timestamp.now(),
+    );
+
+    DiagnosisModel diagnosisModel = DiagnosisModel(
+      diagnosisDescription: diagnosisTextController.text,
+      doctorId: doctor.id,
+      prescription: prescriptionList,
+    );
+
+    VisitBillingModel visitBillingModel = VisitBillingModel(
+      doctorId: doctor.id,
+      createdTime:time,
+      discount: discount,
+      fee: price,
+      totalFees: total,
+      paymentMode: PaymentModes.cash
+    );
+
+    String id = MyUtils.getUniqueIdFromUuid();
+
+    VisitModel visitModel = VisitModel(
+      active: true,
+      patientId: "d86460602a8411edb04ead939aa5bd25",
+      createdTime: time,
+      id: id,
+      vitals: vitalsModel,
+      diagnosis: [diagnosisModel],
+      visitBillings: {doctor.id : visitBillingModel},
+      patientMetaModel: patientMetaModel,
+    );
+
+    await FirebaseNodes.visitDocumentReference(visitId: visitModel.id).set(visitModel.toMap()).then((value) {
+      MyPrint.printOnConsole("Visit Created Successfully with id:${visitModel.id}");
+    })
+    .catchError((e, s) {
+      MyPrint.printOnConsole("Error in Setting Visit Model in DiagnosisForm().uploadVisit():$e");
+      MyPrint.printOnConsole(s);
+    });
+
+  }
 
   @override
   void initState() {
@@ -44,36 +126,17 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
   @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(widget.title),
-        centerTitle: false,
-        elevation: 0,
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                getPatientInfo(),
-                const SizedBox(height: 10,),
-                getTextFieldWithTitle(title: "Description",controller: diagnosisTextController),
-                const SizedBox(height: 10,),
-                /*getTextFieldWithTitle(title: "Diet instructions",controller: dietInstructionTextController),
-                const SizedBox(height: 10,),*/
-                getMedicineDetails(),
-                const SizedBox(
-                  height: 10,
-                ),
-                getVisitBill(),
-                getEndVisitButton(),
-              ],
+      body: ModalProgressHUD(
+        inAsyncCall: isLoading,
+        progressIndicator: SpinKitCircle(color: themeData.primaryColor,),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: getBody(),
             ),
           ),
         ),
@@ -81,26 +144,132 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
     );
   }
 
+  Widget getBody(){
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        getPatientInfo(),
+        const Divider(),
+        const SizedBox(height: 10,),
+        getVitals(),
+        const SizedBox(height: 10,),
+        getTextFieldWithTitle(title: "Complaints",controller: complaintsTextController),
+        const SizedBox(height: 10,),
+        getTextFieldWithTitle(title: "Diagnosis",controller: diagnosisTextController),
+        const SizedBox(height: 10,),
+        getMedicineDetails(),
+        const SizedBox(height: 10,),
+        getTextFieldWithTitle(title: "Instructions",controller: instructionTextController),
+        const SizedBox(height: 10,),
+        getVisitBill(),
+        getEndVisitButton(),
+      ],
+    );
+  }
+
   Widget getPatientInfo(){
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            const ProfilePictureCircle(imageUrl: noUserImageUrl,height: 30,width: 30,),
+            const SizedBox(width: 10,),
+            Expanded(
+              child:CommonText(text: "Mr. xyz pqr"),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10,),
+        SizedBox(
+          height: 15,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CommonText(text: "Hhsdv934756JawyufdguL"),
+              const VerticalDivider(color: Colors.black,width: 8),
+              CommonText(text: "66y"),
+              const VerticalDivider(color: Colors.black,width: 8),
+              CommonText(text: "Male"),
+              const VerticalDivider(color: Colors.black,width: 8),
+              CommonText(text: "9355684965")
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  Widget getVitals() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(child: getSingleVitalValue(title: "Height", textEditingController: heightTextController, suffix: "cm")),
+            const SizedBox(width: 10,),
+            Expanded(child: getSingleVitalValue(title: "Weight", textEditingController: weightTextController, suffix: "Kg")),
+            const SizedBox(width: 10,),
+            Expanded(child: getSingleVitalValue(title: "Pulse", textEditingController: pulseTextController, suffix: "bpm")),
+            const SizedBox(width: 10,),
+          ],
+        ),
+        const SizedBox(height: 10,),
+        Row(
+          children: [
+            Expanded(child: getSingleVitalValue(title: "Temp.", textEditingController: temperatureTextController,suffix:  "F")),
+            const SizedBox(width: 10,),
+            CommonText(text: "BP"),
+            const SizedBox(width: 3,),
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: AppTheme.lightTheme.primaryColor.withOpacity(.06),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
+                    border: Border.all(color: AppTheme.lightTheme.primaryColor)
+                ),
+                child: Row(
+                  children: [
+                    Expanded(child: CommonTextFormField(controller: bPSystolicTextController,transparent: true,keyboardType: TextInputType.number,)),
+                    CommonText(text: "/"),
+                    Expanded(child: CommonTextFormField(controller: bPDiastolicTextController,transparent: true,keyboardType: TextInputType.number)),
+                    Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: CommonText(text: "mmHg")),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(width: 10,),
+            Expanded(child: getSingleVitalValue(title: "Blood group", textEditingController: bloodGroupTextController,isChar: true)),
+          ],
+        ),
+        const SizedBox(height: 10,),
+      ],
+    );
+  }
+
+  Widget getSingleVitalValue({required String title,required TextEditingController textEditingController,String? suffix , bool isChar=false}){
     return Row(
       children: [
-        ProfilePictureCircle(imageUrl: noUserImageUrl),
-        const SizedBox(width: 20,),
+        CommonText(text: title),
+        const SizedBox(width: 5,),
         Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GetKeyValueWidget(keyString: "Id" , value: "D0014352"),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GetKeyValueWidget(keyString: "Blood Group" , value: "B +"),
-                  GetKeyValueWidget(keyString: "Weight" , value: "50 Kg"),
-                  Container(),
-                ],
-              ),
-            ],
+          child: Container(
+            decoration: BoxDecoration(
+                color: AppTheme.lightTheme.primaryColor.withOpacity(.06),
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                border: Border.all(color: AppTheme.lightTheme.primaryColor)
+            ),
+            child: Row(
+              children: [
+                Expanded(child: CommonTextFormField(controller: textEditingController,transparent: true,keyboardType: isChar?TextInputType.text:TextInputType.number,)),
+                const VerticalDivider(color: Colors.black,width: 5,),
+                suffix!=null?Container(
+                    padding: const EdgeInsets.only(right: 5),
+                    child: CommonText(text: suffix)):const SizedBox.shrink(),
+              ],
+            ),
           ),
         ),
       ],
@@ -113,11 +282,16 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
         getTitleWithAddButton(
             title: AppStrings.medicinePrescription,
             onTap: () async{
-                List list = await showDialog(
-                    barrierDismissible: false,
+                List list = await showModalBottomSheet(
+                  isDismissible: false,
+                    isScrollControlled: true,
+                    enableDrag: true,
                     context: context,
                     builder: (context){
-                      return const GetMedicineDialog();
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                        child: const GetMedicineDialog(),
+                      );
                     });
                 if (list[0] == true) {
                   prescriptionList.add(list[1]);
@@ -126,7 +300,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
             }
             ),
         const SizedBox(height: 10,),
-        prescriptionList.length>0?getPrescriptionTable():SizedBox.shrink(),
+        prescriptionList.isNotEmpty ? getPrescriptionTable() : const SizedBox.shrink(),
       ],
     );
   }
@@ -155,7 +329,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
     for (var element in prescriptionModel.doses) {
       time += "${element.doseTime},";
     }
-    Log().d("total dose string: ${prescriptionModel.totalDose + (prescriptionModel.medicineType==MedicineType.syrup?" ml":"")}");
+    MyPrint.printOnConsole("total dose string: ${prescriptionModel.totalDose + (prescriptionModel.medicineType==MedicineType.syrup?" ml":"")}");
     return DataRow(
         cells: [
           DataCell(SizedBox(
@@ -214,6 +388,9 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
                   return visitBillingDialog();
                 });
               if (list[0] == true) {
+                price = ParsingHelper.parseDoubleMethod(billTextController.text);
+                discount  = (discountTextController.text.isNotEmpty?ParsingHelper.parseDoubleMethod(discountTextController.text):0);
+                total = double.parse(billTextController.text)-discount;
                 setState(() {});
               }
           }
@@ -225,15 +402,13 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
   }
 
   Widget getBillDetails(){
-    double discount  = (discountTextController.text.isNotEmpty?double.parse(discountTextController.text):0);
-    double total = double.parse(billTextController.text)-discount;
     return Column(
       children: [
-        getBillRows(title:AppStrings.consultancyFee,amount: billTextController.text),
-        SizedBox(height: 10,),
+        getBillRows(title:AppStrings.consultancyFee,amount: price.toString()),
+        const SizedBox(height: 10,),
         getBillRows(title:AppStrings.discountPrice,amount: "-$discount"),
-        SizedBox(height: 10,),
-        Divider(),
+        const SizedBox(height: 10,),
+        const Divider(),
         getBillRows(title:AppStrings.totalPrice,amount: "$total"),
       ],
     );
@@ -268,23 +443,6 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget getEndVisitButton(){
-    return FxButton.small(
-      block: true,
-      borderRadiusAll: 4,
-      buttonType: FxButtonType.outlined,
-      splashColor: themeData.colorScheme.primary.withAlpha(60),
-      borderColor: themeData.primaryColor,
-      onPressed: () {
-      },
-      elevation: 0,
-      child: FxText.bodyMedium(
-      AppStrings.endVisit,
-      color: themeData.primaryColor,
-      ),
     );
   }
 
@@ -327,15 +485,15 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
         Text(title,style: themeData.textTheme.headline6,),
         const SizedBox(width: 15,),
         Expanded(
-            child: CommonTextFormField(
-              controller: controller,
-              keyboardType: TextInputType.number,
-              inputFormatter: [
-                FilteringTextInputFormatter.digitsOnly
-              ],
-              hintText: hintText,
-              validator: validator,
-            ),
+          child: CommonTextFormField(
+            controller: controller,
+            keyboardType: TextInputType.number,
+            inputFormatter: [
+              FilteringTextInputFormatter.digitsOnly
+            ],
+            hintText: hintText,
+            validator: validator,
+          ),
         ),
 
       ],
@@ -362,7 +520,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
             ),
           ),
         ),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         Expanded(
           child: FxButton.small(
             borderRadiusAll: 4,
@@ -381,6 +539,32 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget getEndVisitButton(){
+    return FxButton.small(
+      block: true,
+      borderRadiusAll: 4,
+      buttonType: FxButtonType.outlined,
+      splashColor: themeData.colorScheme.primary.withAlpha(60),
+      borderColor: themeData.primaryColor,
+      onPressed: () async{
+        setState((){
+          isLoading=true;
+        });
+
+        await uploadVisit();
+
+        setState((){
+          isLoading=false;
+        });
+      },
+      elevation: 0,
+      child: FxText.bodyMedium(
+      AppStrings.endVisit,
+      color: themeData.primaryColor,
+      ),
     );
   }
 }

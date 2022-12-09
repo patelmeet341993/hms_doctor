@@ -4,10 +4,9 @@
 * */
 
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../configs/constants.dart';
-import '../utils/shared_pref_manager.dart';
 
 class AppThemeProvider extends ChangeNotifier {
 

@@ -1,16 +1,13 @@
-
 import 'dart:math';
 
 import 'package:doctor/providers/app_theme_provider.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../../../configs/app_theme.dart';
-import '../../../utils/SizeConfig.dart';
 import '../../common/components/ScreenMedia.dart';
 import 'dashboard_header.dart';
-
 
 class CustomBottomNavigation extends StatefulWidget {
   final List<IconData> icons;
@@ -24,7 +21,7 @@ class CustomBottomNavigation extends StatefulWidget {
   final Color? splashColor, highlightColor, brandTextColor, verticalDividerColor;
   final Widget? floatingActionButton;
 
-   CustomBottomNavigation(
+   const CustomBottomNavigation(
       {Key? key,
         required this.icons,
         this.activeIcons = const [],
@@ -85,11 +82,6 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
     changeTab(value);
   }
 
-  dispose() {
-    super.dispose();
-    _tabController!.dispose();
-  }
-
   changeTab(int index) {
     setState(() {
       _currentIndex = index;
@@ -103,7 +95,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
 
     //Final Variables
     icons = widget.icons;
-    activeIcons = widget.activeIcons ?? icons;
+    activeIcons = widget.activeIcons;
     screens = widget.screens;
     titles = widget.titles;
     activeColor = widget.activeColor!;
@@ -141,6 +133,12 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
   }
 
   @override
+  dispose() {
+    super.dispose();
+    _tabController!.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
     return Consumer<AppThemeProvider>(
@@ -167,26 +165,24 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
       tabs.add(Container(
         child: _currentIndex == i
             ? Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              activeIcons[i],
-              color: activeColor ?? themeData.colorScheme.primary,
-              size: activeIconSize,
-            ),
-            Spacing.height(4),
-            titles != null
-                ? Text(
-              titles[i],
-              style: AppTheme.getTextStyle(
-                  themeData.textTheme.caption!,
-                  color:
-                  activeColor ?? themeData.colorScheme.primary,
-                  fontWeight: FontWeight.w600),
-            )
-                : SizedBox()
-          ],
-        )
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    activeIcons[i],
+                    color: activeColor ?? themeData.colorScheme.primary,
+                    size: activeIconSize,
+                  ),
+                  Spacing.height(4),
+                  Text(
+                    titles[i],
+                    style: AppTheme.getTextStyle(
+                        themeData.textTheme.caption!,
+                        color:
+                        activeColor ?? themeData.colorScheme.primary,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ],
+              )
             : Icon(
           icons[i],
           color: color ?? themeData.colorScheme.onBackground,
@@ -198,7 +194,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
     return Scaffold(
       backgroundColor: themeData.backgroundColor,
       appBar: PreferredSize(
-        preferredSize: Size(double.infinity, 80),
+        preferredSize: const Size(double.infinity, 80),
         child: AppBar(
           toolbarHeight: 80,
           // primary: true,
@@ -208,8 +204,8 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
       ),
       floatingActionButton: floatingActionButton,
       bottomNavigationBar: BottomAppBar(
-          elevation: bottomNavigationElevation??4,
-          shape: CircularNotchedRectangle(),
+          elevation: bottomNavigationElevation,
+          shape: const CircularNotchedRectangle(),
           child: Container(
             decoration: BoxDecoration(
               color: navigationBackground ?? themeData.bottomAppBarTheme.color,
@@ -224,7 +220,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
               dragStartBehavior: DragStartBehavior.start,
 
               controller: _tabController,
-              indicator: BoxDecoration(),
+              indicator: const BoxDecoration(),
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorColor: themeData.colorScheme.primary,
               tabs: tabs,
@@ -242,8 +238,7 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
   Widget largeScreen(ScreenMediaType screenMediaType, bool isExtended) {
     List<NavigationRailDestination> rails = [];
 
-    bool isTablet = ScreenMedia.isMinimumSize(ScreenMediaType.LG,
-        currentScreenMediaType: screenMediaType);
+    // bool isTablet = ScreenMedia.isMinimumSize(ScreenMediaType.LG, currentScreenMediaType: screenMediaType);
 
     //Large Screen
     // if (isTablet) _isExtended = ValueNotifier<bool>(false);
@@ -263,16 +258,14 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
             color: activeColor ?? themeData.colorScheme.primary,
             size: 18,
           ),
-          label: titles != null
-              ? Text(
+          label: Text(
             titles[i],
             style: AppTheme.getTextStyle(themeData.textTheme.caption!,
                 color: _currentIndex == i
                     ? (activeColor ?? themeData.colorScheme.primary)
                     : (color ?? themeData.colorScheme.onBackground),
                 fontWeight: FontWeight.w600),
-          )
-              : Text(""),
+          ),
         ),
       );
     }
@@ -349,7 +342,7 @@ class _NavigationRailHeader extends StatelessWidget {
   const _NavigationRailHeader({
     required this.extended,
     this.brandTextColor,
-  }) : assert(extended != null);
+  });
 
   @override
   Widget build(BuildContext context) {

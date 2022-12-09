@@ -1,15 +1,9 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hms_models/hms_models.dart';
 
-import '../../configs/app_strings.dart';
-import '../../providers/admin_user_provider.dart';
-import '../navigation_controller.dart';
+import '../configs/app_strings.dart';
 
 class AdminUserController {
-  static StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? adminUserStreamSubscription;
-
   Future<AdminUserModel?> createAdminUserWithUsernameAndPassword({required BuildContext context, required AdminUserModel userModel, String userType = AdminUserType.doctor,}) async {
     if(userModel.username.isEmpty || userModel.password.isEmpty) {
       MyToast.showError(context: context, msg: "UserName is empty or password is empty",);
@@ -60,49 +54,8 @@ class AdminUserController {
       }
     }
     else {
-      MyToast.showError(context: context, msg: AppStrings.givenUserAlreadyExist,);
+      MyToast.showError(context: context,msg: AppStrings.givenUserAlreadyExist,);
       return null;
     }
-  }
-
-  void startAdminUserSubscription() async {
-    AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
-    String adminUserId = adminUserProvider.adminUserId;
-
-    if(adminUserId.isNotEmpty) {
-      if(adminUserStreamSubscription != null) {
-        adminUserStreamSubscription!.cancel();
-        adminUserStreamSubscription = null;
-      }
-
-      adminUserStreamSubscription = FirebaseNodes.adminUserDocumentReference(userId: adminUserId).snapshots().listen((DocumentSnapshot<Map<String, dynamic>> snapshot) {
-        MyPrint.printOnConsole("Admin User Document Updated.\n"
-            "Snapshot Exist:${snapshot.exists}\n"
-            "Data:${snapshot.data()}");
-
-        if(snapshot.exists && (snapshot.data() ?? {}).isNotEmpty) {
-          AdminUserModel adminUserModel = AdminUserModel.fromMap(snapshot.data()!);
-          adminUserProvider.setAdminUserId(adminUserModel.id);
-          adminUserProvider.setAdminUserModel(adminUserModel);
-        }
-        else {
-          adminUserProvider.setAdminUserId("");
-          adminUserProvider.setAdminUserModel(null);
-        }
-      });
-
-      MyPrint.printOnConsole("Admin User Stream Started");
-    }
-  }
-
-  void stopAdminUserSubscription() async {
-    AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
-
-    if(adminUserStreamSubscription != null) {
-      adminUserStreamSubscription!.cancel();
-      adminUserStreamSubscription = null;
-    }
-    adminUserProvider.setAdminUserId("");
-    adminUserProvider.setAdminUserModel(null);
   }
 }

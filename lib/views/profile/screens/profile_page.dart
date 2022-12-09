@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:doctor/configs/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../../../configs/app_strings.dart';
 import '../../../controllers/authentication_controller.dart';
@@ -59,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           ClipRRect(
                             clipBehavior: Clip.antiAliasWithSaveLayer,
-                            borderRadius: BorderRadius.all(Radius.circular(60)),
+                            borderRadius: const BorderRadius.all(Radius.circular(60)),
                             child: CachedNetworkImage(
                               height: 100,
                               width: 100,
@@ -72,7 +70,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     color: themeData.secondaryHeaderColor,
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.image,
                                       size: 40,
                                     ),
@@ -114,7 +112,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10,),
+                    const SizedBox(height: 10,),
                     FxText.bodyLarge(
                       'Dr. Grey',
                       fontWeight: 700,
@@ -122,7 +120,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
               ),
-              SizedBox(height: 10,),
+              const SizedBox(height: 10,),
               FxText.bodyLarge("About",fontWeight: 700,),
               FxText.bodySmall("jadkhaesf jagefuhsef ajfeuzshdf ajbedeizse jabefizse HIUR   JHSDFKJ asdhfihse ajbedi ajdbfi aifdei jbdfi",),
 

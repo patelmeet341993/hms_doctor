@@ -1,5 +1,5 @@
-import 'package:doctor/configs/app_strings.dart';
 import 'package:doctor/packages/flux/flutx.dart';
+import 'package:doctor/configs/app_strings.dart';
 import 'package:doctor/views/common/components/get_key_value_widget.dart';
 import 'package:flutter/material.dart';
 

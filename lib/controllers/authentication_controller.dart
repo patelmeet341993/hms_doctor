@@ -1,21 +1,14 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../configs/app_strings.dart';
 import '../configs/constants.dart';
-import '../models/admin_user_model.dart';
 import '../providers/admin_user_provider.dart';
-import '../utils/logger_service.dart';
-import '../utils/my_toast.dart';
-import '../utils/parsing_helper.dart';
-import '../utils/shared_pref_manager.dart';
 import '../views/authentication/login_screen.dart';
 import '../views/homescreen/homescreen.dart';
 import 'admin_user/admin_user_controller.dart';
-import 'firestore_controller.dart';
 import 'navigation_controller.dart';
 
 class AuthenticationController {
@@ -23,7 +16,7 @@ class AuthenticationController {
     AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
 
     String userJson = await SharedPrefManager().getString(SharePrefrenceKeys.loggedInUser) ?? "";
-    Log().i("userJson:'$userJson'");
+    MyPrint.printOnConsole("userJson:'$userJson'");
 
     AdminUserModel? adminUserModel;
 
@@ -35,15 +28,16 @@ class AuthenticationController {
       }
     }
     catch(e, s) {
-      Log().e("Error in Decoding User Data From Shared Preference:$e", s);
+      MyPrint.printOnConsole("Error in Decoding User Data From Shared Preference:$e");
+      MyPrint.printOnConsole(s);
     }
 
     if(adminUserModel != null && adminUserModel.id.isNotEmpty) {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await FirestoreController().firestore.collection(FirebaseNodes.adminUsersCollection).doc(adminUserModel.id).get();
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot = await FirebaseNodes.adminUserDocumentReference(userId: adminUserModel.id).get();
 
       if(documentSnapshot.exists && (documentSnapshot.data() ?? {}).isNotEmpty) {
         AdminUserModel newModel = AdminUserModel.fromMap(documentSnapshot.data()!);
-        if(adminUserModel.username == newModel.username && adminUserModel.password == newModel.password) {
+        if(adminUserModel.username == newModel.username && adminUserModel.password == newModel.password && newModel.isActive) {
           adminUserProvider.setAdminUserId(newModel.id);
           adminUserProvider.setAdminUserModel(newModel);
           if(adminUserModel != newModel) {
@@ -77,7 +71,7 @@ class AuthenticationController {
     bool isLoginSuccess = false;
 
     if(userName.isEmpty || password.isEmpty) {
-      MyToast.showError(AppStrings.usernameOrPasswordIsEmpty, context);
+      MyToast.showError(context: context, msg: AppStrings.usernameOrPasswordIsEmpty,);
       return isLoginSuccess;
     }
 
@@ -87,16 +81,17 @@ class AuthenticationController {
 
     AdminUserModel? adminUserModel;
 
-    Query<Map<String, dynamic>> query = FirestoreController().firestore.collection(FirebaseNodes.adminUsersCollection).where("username", isEqualTo: userName);
+    Query<Map<String, dynamic>> query = FirebaseNodes.adminUsersCollectionReference.where("username", isEqualTo: userName);
     if(userTypes.isNotEmpty) {
       query = query.where("role", whereIn: userTypes);
     }
+
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await query.get();
     if(querySnapshot.docs.isNotEmpty) {
       DocumentSnapshot<Map<String, dynamic>> docSnapshot = querySnapshot.docs.first;
       if((docSnapshot.data() ?? {}).isNotEmpty) {
         AdminUserModel model = AdminUserModel.fromMap(docSnapshot.data()!);
-        isLoginSuccess = model.username == userName && model.password == password && userTypes.contains(model.role);
+        isLoginSuccess = model.username == userName && model.password == password && userTypes.contains(model.role) && model.isActive;
         if(isLoginSuccess) {
           adminUserModel = model;
         }
@@ -104,7 +99,7 @@ class AuthenticationController {
     }
     
     AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
-    adminUserProvider.setAdminUserId(adminUserModel?.id ?? "");
+    adminUserProvider.setAdminUserId(adminUserModel?.id ?? "", isNotify: false);
     adminUserProvider.setAdminUserModel(adminUserModel, isNotify: false);
     SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, adminUserModel != null ? jsonEncode(adminUserModel.toMap(toJson: true)) : "");
 

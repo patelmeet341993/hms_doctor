@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class CommonText extends StatelessWidget {
   final String text;
   final double fontSize;
+  final double height;
   final FontWeight fontWeight;
   final Color? color;
   final TextAlign? textAlign;
@@ -13,6 +14,7 @@ class CommonText extends StatelessWidget {
   const CommonText({
     required this.text,
     this.fontSize = 15,
+    this.height = 1.1,
     this.fontWeight = FontWeight.normal,
     this.color,
     this.textAlign,
@@ -31,6 +33,7 @@ class CommonText extends StatelessWidget {
       style: TextStyle(
         decoration: textDecoration,
         fontSize: fontSize,
+        height: height,
         fontWeight: fontWeight,
         color: color,
       ),

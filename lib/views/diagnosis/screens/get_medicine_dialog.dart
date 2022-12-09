@@ -1,14 +1,11 @@
 import 'package:doctor/configs/app_strings.dart';
-import 'package:doctor/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hms_models/hms_models.dart';
 
-import '../../../models/visit_model/prescription/prescription_medicine_dose_model.dart';
-import '../../../models/visit_model/prescription/prescription_model.dart';
 import '../../../packages/flux/widgets/button/button.dart';
 import '../../../packages/flux/widgets/text/text.dart';
-import '../../../utils/logger_service.dart';
-import '../../../utils/my_safe_state.dart';
+import '../../common/components/common_text.dart';
 import '../../common/components/common_text_form_field.dart';
 
 class GetMedicineDialog extends StatefulWidget {
@@ -24,6 +21,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextEditingController medicineNameTextController = TextEditingController();
+  TextEditingController totalDaysTextController = TextEditingController();
   TextEditingController medicineInstructionTextController = TextEditingController();
   TextEditingController prescriptionQuantityTextController = TextEditingController();
 
@@ -45,35 +43,36 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   @override
   Widget build(BuildContext context) {
     themeData = Theme.of(context);
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      child: SingleChildScrollView(
-        child: Form(
-          key: _formKey,
-          child: Container(
-            padding: EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(),
-                    Text(AppStrings.medicine,style: themeData.textTheme.headline5?.apply(color: themeData.primaryColor),),
-                    Container(),
-                  ],
-                ),
-                Text(AppStrings.medicineType,style: themeData.textTheme.headline6,),
-                getMedicineType(),
-                getMedicineName(),
-                SizedBox(height: 10,),
-                getMedicineInstruction(),
-                getMedicineTimings(),
-                medicineType==MedicineType.other?SizedBox.shrink():getTimingsDosageWidget(),
-                getLastButtons(),
-              ],
-            ),
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20))
+          ),
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  Text(AppStrings.medicine,style: themeData.textTheme.headline5?.apply(color: themeData.primaryColor),),
+                  Container(),
+                ],
+              ),
+              getMedicineType(),
+              getMedicineName(),
+              const SizedBox(height: 10,),
+              getMedicineInstruction(),
+              getMedicineTimings(),
+              medicineType==MedicineType.other?const SizedBox.shrink():getTimingsDosageWidget(),
+              getLastButtons(),
+            ],
           ),
         ),
       ),
@@ -84,6 +83,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        Text(AppStrings.medicineType,style: themeData.textTheme.headline6,),
         Radio<String>(
           value: MedicineType.tablet,
           groupValue: medicineType,
@@ -91,10 +91,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             setState(() {
               medicineType = value!;
             });
-            Log().d("Value changed , $medicineType");
+            MyPrint.printOnConsole("Value changed , $medicineType");
           },
         ),
-        Text(MedicineType.tablet),
+        CommonText(text:MedicineType.tablet),
         Radio<String>(
           value: MedicineType.syrup,
           groupValue: medicineType,
@@ -102,11 +102,11 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             setState(() {
               medicineType = value!;
             });
-            Log().d("Value changed , $medicineType");
+            MyPrint.printOnConsole("Value changed , $medicineType");
 
           },
         ),
-        Text(MedicineType.syrup),
+        CommonText(text:MedicineType.syrup),
         Radio<String>(
           value: MedicineType.other,
           groupValue: medicineType,
@@ -114,25 +114,23 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             setState(() {
               medicineType = value!;
             });
-            Log().d("Value changed , $medicineType");
+            MyPrint.printOnConsole("Value changed , $medicineType");
           },
         ),
-        Text(MedicineType.other),
+        CommonText(text:MedicineType.other),
       ],
     );
   }
 
   Widget getMedicineName(){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        Expanded(
-          flex: 2,
-          child: Column(
-            children: [
-              Text(AppStrings.name,style: themeData.textTheme.headline6,),
-              SizedBox(height: 5,),
-              CommonTextFormField(
+        Row(
+          children: [
+            Text(AppStrings.name,style: themeData.textTheme.headline6,),
+            const SizedBox(width: 5,),
+            Expanded(
+              child: CommonTextFormField(
                 controller: medicineNameTextController,
                 hintText: AppStrings.enterMedicineName,
                 validator: (value) {
@@ -142,33 +140,44 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                   return null;
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-        Expanded(
-          flex: 1,
-          child: Column(
-            children: [
-              Text(medicineType==MedicineType.syrup?AppStrings.quantityInML:AppStrings.quantity,style: themeData.textTheme.headline6,),
-              SizedBox(height: 5,),
-              SizedBox(
-                  width:50,
-                  child: CommonTextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: prescriptionQuantityTextController,
-                    inputFormatter: [
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return AppStrings.enterQuantity;
-                      }
-                      return null;
-                    },
-                  ),
+        const SizedBox(height: 10,),
+        Row(
+          children: [
+            Text(medicineType==MedicineType.syrup?AppStrings.quantityInML:AppStrings.quantity,style: themeData.textTheme.headline6,),
+            const SizedBox(width: 5,),
+            Expanded(
+                child: CommonTextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: prescriptionQuantityTextController,
+                  inputFormatter: [
+                    FilteringTextInputFormatter.digitsOnly
+                  ],
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return AppStrings.enterQuantity;
+                    }
+                    return null;
+                  },
+                ),
+            ),
+            const SizedBox(width: 10,),
+            Text(AppStrings.totalDays,style: themeData.textTheme.headline6,),
+            const SizedBox(width: 5,),
+            Expanded(
+              child: CommonTextFormField(
+                controller: totalDaysTextController,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return AppStrings.enterMedicineName;
+                  }
+                  return null;
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
@@ -178,7 +187,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
     return Row(
       children: [
         Text(AppStrings.instructions,style: themeData.textTheme.headline6,),
-        SizedBox(width: 5,),
+        const SizedBox(width: 5,),
         Expanded(child: CommonTextFormField(controller: medicineInstructionTextController,hintText: AppStrings.enterExtraInstructions,)),
       ],
     );
@@ -188,10 +197,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
     return Row(
       children: [
         Text(AppStrings.time,style: themeData.textTheme.headline6,),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         Expanded(
           child: ToggleButtons(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
                 maxHeight: 70,
                 minHeight: 30
             ),
@@ -216,10 +225,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
               else if(advanceDoseModels.length>1){
                 advanceDoseModels.removeWhere((element) => element.title==title);
               }
-              Log().d("status = ${timingsBool[index]}, timinglist: ${advanceDoseModels.length}");
-              advanceDoseModels.forEach((element) {
-                Log().d("strings: ${element.title}");
-              });
+              MyPrint.printOnConsole("status = ${timingsBool[index]}, timinglist: ${advanceDoseModels.length}");
+              for (AdvanceDoseModel element in advanceDoseModels) {
+                MyPrint.printOnConsole("strings: ${element.title}");
+              }
               mySetState();
             },
             children: <Widget>[
@@ -250,7 +259,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             isAdvanced=!isAdvanced;
             mySetState();
           },
-          child: Text(AppStrings.advance,style: TextStyle(
+          child: const Text(AppStrings.advance,style: TextStyle(
             decoration: TextDecoration.underline,
             color: Colors.blue,
             fontSize: 14,
@@ -262,58 +271,67 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   
   Widget getBMealAMealWidget({int index=0}){
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children:[
-              Text(AppStrings.beforeMeal,style: themeData.textTheme.bodySmall,),
-              SizedBox(
-                width:35,
-                height:35,
-                child: Checkbox(
-                  value: advanceDoseModels[index].beforeMeal,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      advanceDoseModels[index].beforeMeal = value??false;
-                    });
-                  },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(AppStrings.beforeMeal,style: themeData.textTheme.bodySmall,),
+                SizedBox(
+                  height:25,
+                  child: Checkbox(
+                    value: advanceDoseModels[index].beforeMeal,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        advanceDoseModels[index].beforeMeal = value??false;
+                      });
+                    },
+                  ),
                 ),
-              ),
-              Text(AppStrings.afterMeal,style: themeData.textTheme.bodySmall,),
-              SizedBox(
-                width:35,
-                height:35,
-                child: Checkbox(
-                  value: advanceDoseModels[index].afterMeal,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      advanceDoseModels[index].afterMeal = value??false;
-                    });
-                  },
-                ),
-              )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(AppStrings.afterMeal,style: themeData.textTheme.bodySmall,),
+                SizedBox(
+                   height:25,
+                   child: Checkbox(
+                     value: advanceDoseModels[index].afterMeal,
+                     onChanged: (bool? value) {
+                       setState(() {
+                         advanceDoseModels[index].afterMeal = value??false;
+                       });
+                     },
+                   ),
+                 ),
+               ],
+             ),
           ]
         ),
         Expanded(
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(AppStrings.dosage,style: themeData.textTheme.bodyLarge,),
-              SizedBox(width: 5,),
-              SizedBox(
-                  height:40,
-                  width:40,
-                  child: CommonTextFormField(
-                    controller: advanceDoseModels[index].textEditingController,
-                    keyboardType: TextInputType.numberWithOptions(decimal: true),
-                    inputFormatter: [
-                      FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
-                    ],
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return AppStrings.enterDosage;
-                      }
-                      return null;
-                    },
-                  ),
+              Text(medicineType==MedicineType.syrup?AppStrings.dosageMl:AppStrings.dosage,style: themeData.textTheme.bodyLarge,),
+              const SizedBox(width: 5,),
+              Expanded(
+                child: CommonTextFormField(
+                  controller: advanceDoseModels[index].textEditingController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatter: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                  ],
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return AppStrings.enterDosage;
+                    }
+                    return null;
+                  },
+                ),
               ),
             ],
           ),
@@ -323,10 +341,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   }
 
   Widget getAdvancedWidget(){
-    Log().d("in single widget length: ${advanceDoseModels.length}");
+    MyPrint.printOnConsole("in single widget length: ${advanceDoseModels.length}");
     return Column(
       children: List.generate(advanceDoseModels.length, (index) {
-        Log().d("in single widget index: $index,title: ${advanceDoseModels[index].title}");
+        MyPrint.printOnConsole("in single widget index: $index,title: ${advanceDoseModels[index].title}");
         return getSingleAdvancedWidget(index: index, title: advanceDoseModels[index].title);
       }),
     );
@@ -334,10 +352,11 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
 
   Widget getSingleAdvancedWidget({required int index,required String title}){
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         border: Border.all(color: themeData.primaryColor,width: 1),
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: themeData.primaryColor.withOpacity(.1)
       ),
       child: Column(
@@ -370,7 +389,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             ),
           ),
         ),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         Expanded(
           child: FxButton.small(
             borderRadiusAll: 4,
@@ -408,7 +427,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                   totalDose: prescriptionQuantityTextController.text + (medicineType==MedicineType.syrup?" ml":""),
                   doses: prescriptionList,
                 );
-                Log().d("total dose string: ${prescriptionQuantityTextController.text + medicineType==MedicineType.syrup?" ml":""}");
+                MyPrint.printOnConsole("total dose string: ${prescriptionQuantityTextController.text + medicineType==MedicineType.syrup?" ml":""}");
                 Navigator.pop(context,[true,prescriptionModel]);
               }
             },

@@ -1,6 +1,6 @@
 import 'package:doctor/views/homescreen/components/custom_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../../configs/constants.dart';
 import '../../providers/admin_user_provider.dart';

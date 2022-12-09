@@ -39,50 +39,8 @@ dependencies:
   ########
   # Core #
   ########
-
-  ############
-  # Firebase #
-  ############
-  firebase_core: ^1.21.1
-  firebase_auth: ^3.7.0 # authentication
-  cloud_firestore: ^3.4.6 # firestore database
-  firebase_messaging: ^13.0.0 # notifications
-  firebase_analytics: ^9.3.3 # analytics
-  firebase_crashlytics: ^2.8.9 # crashlytics
-
-
-  ###########
-  # Logging #
-  ###########
-  logger: ^1.1.0 # colourful logs in log console
-
-  ######
-  # UI #
-  ######
-  loading_animation_widget: ^1.2.0+2
-  flutter_spinkit: ^5.1.0
-  google_fonts: ^3.0.1
-  fluttertoast: ^8.0.9
-  cached_network_image: ^3.2.1
-  shimmer: ^2.0.0
-  font_awesome_flutter: ^10.1.0
-  flutter_feather_icons: ^2.0.0+1
-
-
-  ####################
-  # State management #
-  ####################
-  provider: ^6.0.3
-
-  #########
-  # Utils #
-  #########
-  shared_preferences: ^2.0.15
-  intl: ^0.17.0
-  connectivity_plus: ^2.3.6+1
-  uuid: ^3.0.6
-  equatable: ^2.0.5
-  qr_flutter: ^4.0.0
+  hms_models:
+    git: https://github.com/patelmeet341993/hms_models
 
 dev_dependencies:
   flutter_test:

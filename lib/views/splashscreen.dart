@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:hms_models/hms_models.dart';
 
 import '../controllers/admin_user/admin_user_controller.dart';
 import '../controllers/authentication_controller.dart';
 import '../controllers/navigation_controller.dart';
-import '../models/admin_user_model.dart';
-import '../utils/logger_service.dart';
 import 'authentication/login_screen.dart';
 import 'common/components/common_text.dart';
 import 'homescreen/homescreen.dart';
@@ -26,7 +24,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // await Future.delayed(Duration(seconds: 2));
 
     AdminUserModel? user = await AuthenticationController().isUserLoggedIn();
-    Log().i("User From isUserLoggedIn:$user");
+    MyPrint.printOnConsole("User From isUserLoggedIn:$user");
 
     NavigationController.isFirst = false;
     if(user != null) {
