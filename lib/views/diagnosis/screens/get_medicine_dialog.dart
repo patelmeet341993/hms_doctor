@@ -146,7 +146,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
         const SizedBox(height: 10,),
         Row(
           children: [
-            Text(AppStrings.quantity,style: themeData.textTheme.headline6,),
+            Text(medicineType==MedicineType.syrup?AppStrings.quantityInML:AppStrings.quantity,style: themeData.textTheme.headline6,),
             const SizedBox(width: 5,),
             Expanded(
                 child: CommonTextFormField(

@@ -1,58 +1,32 @@
 import 'package:flutter/material.dart';
 
-class CommonButtonWithArrow extends StatelessWidget {
-  final Function()? onPressed;
-  final String text;
-  final Color backgroundColor;
-  final bool isForwardArrowVisible;
-  final double fontSize;
+import 'common_text.dart';
 
-  const CommonButtonWithArrow(
-      {
-        this.onPressed,
-        required this.text,
-        this.backgroundColor =  Colors.white,
-        this.isForwardArrowVisible = false,
-        this.fontSize=14
-      });
+class CommonButton extends StatelessWidget {
+  String buttonName;
+  Function()? onTap;
+  double borderRadius = 4;
+  double? width;
+  double verticalPadding=10,horizontalPadding=10;
+  FontWeight fontWeight = FontWeight.bold;
+   CommonButton({required this.buttonName,required this.onTap,this.borderRadius=4,this.width,this.horizontalPadding=10,
+     this.verticalPadding=10,
+     this.fontWeight=FontWeight.bold,
+   });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialButton(
-      onPressed: onPressed,
+    ThemeData themeData = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10,horizontal:0 ),
+        width: width,
+        padding: EdgeInsets.symmetric(vertical: verticalPadding,horizontal: horizontalPadding),
         decoration: BoxDecoration(
-            color:backgroundColor,
-            borderRadius: BorderRadius.circular(30)
+          color: themeData.primaryColor,
+          borderRadius: BorderRadius.circular(borderRadius)
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(width: 8,),
-            Padding(
-              padding:  const EdgeInsets.symmetric(horizontal: 30),
-              child: Text(
-                text,
-                style:  TextStyle(
-                    fontSize: fontSize,
-                    color: Colors.blue
-                ),
-              ),
-            ),
-            Visibility(
-              visible: isForwardArrowVisible,
-              child: const Padding(
-                padding:  EdgeInsets.only(right: 4.0),
-                child: Icon(
-                  Icons.arrow_forward_ios_outlined,
-                  color: Colors.blue,
-                  size: 20,
-                ),
-              ),
-            )
-          ],
-        ),
+        child: CommonText(text: buttonName,fontWeight:fontWeight,color: Colors.white,textAlign: TextAlign.center,),
       ),
     );
   }

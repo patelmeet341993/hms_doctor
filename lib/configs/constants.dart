@@ -11,4 +11,18 @@ class SharePrefrenceKeys {
 
 class AppConstants {
   static const List<String> userTypesForLogin = [AdminUserType.doctor];
+
+  static String hospitalId = "Hospital_1";
+}
+
+class HomeScreenComponentsList {
+  final List<HomeScreenComponentModel> _masterOptions = [
+    const HomeScreenComponentModel(icon: FontAwesomeIcons.list, activeIcon: FontAwesomeIcons.list, screen: PatientList(title: AppStrings.patients), title: AppStrings.patients),
+    const HomeScreenComponentModel(icon: FontAwesomeIcons.stethoscope, activeIcon: FontAwesomeIcons.stethoscope, screen: DiagnosisForm(title: AppStrings.diagnosis), title: AppStrings.diagnosis),
+    const HomeScreenComponentModel(icon: FontAwesomeIcons.user, activeIcon: FontAwesomeIcons.user, screen: ProfileScreen(title: AppStrings.profile), title: AppStrings.profile),
+  ];
+
+  List<HomeScreenComponentModel> getHomeScreenComponentsRolewise(String role) {
+    return _masterOptions;
+  }
 }

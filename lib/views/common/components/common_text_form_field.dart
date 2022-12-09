@@ -41,7 +41,7 @@ class CommonTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         isDense: true,
         fillColor: transparent?Colors.transparent:themeData.inputDecorationTheme.fillColor,
-        contentPadding: const EdgeInsets.symmetric(vertical: 5,horizontal: 5),
+        contentPadding: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
         border: OutlineInputBorder(
             borderSide: const BorderSide(
               color: Colors.transparent,

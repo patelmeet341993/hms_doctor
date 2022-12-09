@@ -4,6 +4,7 @@ import 'package:hms_models/models/admin_user/admin_user_model.dart';
 class AdminUserProvider extends ChangeNotifier {
   //region Logged In Admin User Model
   AdminUserModel? _adminUserModel;
+  String _adminUserId = "";
 
   AdminUserModel? getAdminUserModel() {
     if(_adminUserModel != null) {

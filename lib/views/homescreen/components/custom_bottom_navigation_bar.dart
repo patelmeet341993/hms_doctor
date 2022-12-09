@@ -319,12 +319,12 @@ class _CustomBottomNavigationState extends State<CustomBottomNavigation>
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
+                /*Padding(
                   padding: const EdgeInsets.all(24.0),
                   child: DashboardHeader(title: titles[_currentIndex],),
-                ),
+                ),*/
                 Expanded(
-                  child: Center(child: screens[_currentIndex]),
+                  child: screens[_currentIndex],
                 ),
               ],
             ),
