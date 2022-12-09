@@ -1,32 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doctor/configs/app_theme.dart';
-import 'package:doctor/configs/constants.dart';
-import 'package:doctor/models/admin_user_model.dart';
-import 'package:doctor/models/visit_model/diagnosis%20and%20prescription/diagnosis_model.dart';
-import 'package:doctor/models/visit_model/diagnosis%20and%20prescription/vitals_model.dart';
-import 'package:doctor/models/visit_model/patient_meta_model.dart';
 import 'package:doctor/providers/admin_user_provider.dart';
-import 'package:doctor/utils/my_toast.dart';
-import 'package:doctor/utils/parsing_helper.dart';
 import 'package:doctor/views/common/components/common_text.dart';
 import 'package:doctor/views/common/components/common_text_form_field.dart';
 import 'package:doctor/views/common/components/modal_progress_hud.dart';
 import 'package:doctor/views/common/components/profile_picture_circle.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
+import 'package:hms_models/hms_models.dart';
+
 import '../../../configs/app_strings.dart';
-import '../../../controllers/firestore_controller.dart';
-import '../../../models/visit_model/prescription/prescription_model.dart';
-import '../../../models/visit_model/visit_billings/visit_billing_model.dart';
-import '../../../models/visit_model/visit_model.dart';
 import '../../../packages/flux/widgets/button/button.dart';
 import '../../../packages/flux/widgets/text/text.dart';
-import '../../../utils/logger_service.dart';
-import '../../../utils/my_utils.dart';
 import 'get_medicine_dialog.dart';
 
 class DiagnosisForm extends StatefulWidget {
@@ -65,13 +49,11 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
 
   late ThemeData themeData;
 
-  Future uploadVisit()
-  async
-  {
+  Future<void> uploadVisit() async {
     AdminUserModel? doctor = Provider.of<AdminUserProvider>(context,listen: false).getAdminUserModel();
 
     if(doctor == null){
-      MyToast.showError("Please Login to create visit", context);
+      MyToast.showError(context: context, msg: "Please Login to create visit",);
       return;
     }
 
@@ -125,11 +107,12 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
       patientMetaModel: patientMetaModel,
     );
 
-    await FirestoreController().firestore.collection(FirebaseNodes.visitsCollection).doc(visitModel.id).set(visitModel.toMap()).then((value) {
-      Log().i("Visit Created Successfully with id:${visitModel.id}");
+    await FirebaseNodes.visitDocumentReference(visitId: visitModel.id).set(visitModel.toMap()).then((value) {
+      MyPrint.printOnConsole("Visit Created Successfully with id:${visitModel.id}");
     })
-        .catchError((e, s) {
-      Log().e(e, s);
+    .catchError((e, s) {
+      MyPrint.printOnConsole("Error in Setting Visit Model in DiagnosisForm().uploadVisit():$e");
+      MyPrint.printOnConsole(s);
     });
 
   }
@@ -165,7 +148,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         getPatientInfo(),
-        Divider(),
+        const Divider(),
         const SizedBox(height: 10,),
         getVitals(),
         const SizedBox(height: 10,),
@@ -189,7 +172,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            ProfilePictureCircle(imageUrl: noUserImageUrl,height: 30,width: 30,),
+            const ProfilePictureCircle(imageUrl: noUserImageUrl,height: 30,width: 30,),
             const SizedBox(width: 10,),
             Expanded(
               child:CommonText(text: "Mr. xyz pqr"),
@@ -241,7 +224,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
               child: Container(
                 decoration: BoxDecoration(
                     color: AppTheme.lightTheme.primaryColor.withOpacity(.06),
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: const BorderRadius.all(Radius.circular(10)),
                     border: Border.all(color: AppTheme.lightTheme.primaryColor)
                 ),
                 child: Row(
@@ -250,7 +233,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
                     CommonText(text: "/"),
                     Expanded(child: CommonTextFormField(controller: bPDiastolicTextController,transparent: true,keyboardType: TextInputType.number)),
                     Container(
-                        padding: EdgeInsets.only(right: 5),
+                        padding: const EdgeInsets.only(right: 5),
                         child: CommonText(text: "mmHg")),
                   ],
                 ),
@@ -274,16 +257,16 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
           child: Container(
             decoration: BoxDecoration(
                 color: AppTheme.lightTheme.primaryColor.withOpacity(.06),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
                 border: Border.all(color: AppTheme.lightTheme.primaryColor)
             ),
             child: Row(
               children: [
                 Expanded(child: CommonTextFormField(controller: textEditingController,transparent: true,keyboardType: isChar?TextInputType.text:TextInputType.number,)),
-                VerticalDivider(color: Colors.black,width: 5,),
+                const VerticalDivider(color: Colors.black,width: 5,),
                 suffix!=null?Container(
-                    padding: EdgeInsets.only(right: 5),
-                    child: CommonText(text: suffix)):SizedBox.shrink(),
+                    padding: const EdgeInsets.only(right: 5),
+                    child: CommonText(text: suffix)):const SizedBox.shrink(),
               ],
             ),
           ),
@@ -316,7 +299,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
             }
             ),
         const SizedBox(height: 10,),
-        prescriptionList.length>0?getPrescriptionTable():SizedBox.shrink(),
+        prescriptionList.isNotEmpty ? getPrescriptionTable() : const SizedBox.shrink(),
       ],
     );
   }
@@ -345,7 +328,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
     for (var element in prescriptionModel.doses) {
       time += "${element.doseTime},";
     }
-    Log().d("total dose string: ${prescriptionModel.totalDose + (prescriptionModel.medicineType==MedicineType.syrup?" ml":"")}");
+    MyPrint.printOnConsole("total dose string: ${prescriptionModel.totalDose + (prescriptionModel.medicineType==MedicineType.syrup?" ml":"")}");
     return DataRow(
         cells: [
           DataCell(SizedBox(
@@ -536,7 +519,7 @@ class _DiagnosisFormState extends State<DiagnosisForm> {
             ),
           ),
         ),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         Expanded(
           child: FxButton.small(
             borderRadiusAll: 4,

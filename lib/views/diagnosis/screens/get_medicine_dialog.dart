@@ -1,14 +1,10 @@
 import 'package:doctor/configs/app_strings.dart';
-import 'package:doctor/configs/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hms_models/hms_models.dart';
 
-import '../../../models/visit_model/prescription/prescription_medicine_dose_model.dart';
-import '../../../models/visit_model/prescription/prescription_model.dart';
 import '../../../packages/flux/widgets/button/button.dart';
 import '../../../packages/flux/widgets/text/text.dart';
-import '../../../utils/logger_service.dart';
-import '../../../utils/my_safe_state.dart';
 import '../../common/components/common_text.dart';
 import '../../common/components/common_text_form_field.dart';
 
@@ -95,7 +91,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             setState(() {
               medicineType = value!;
             });
-            Log().d("Value changed , $medicineType");
+            MyPrint.printOnConsole("Value changed , $medicineType");
           },
         ),
         CommonText(text:MedicineType.tablet),
@@ -106,7 +102,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             setState(() {
               medicineType = value!;
             });
-            Log().d("Value changed , $medicineType");
+            MyPrint.printOnConsole("Value changed , $medicineType");
 
           },
         ),
@@ -118,7 +114,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             setState(() {
               medicineType = value!;
             });
-            Log().d("Value changed , $medicineType");
+            MyPrint.printOnConsole("Value changed , $medicineType");
           },
         ),
         CommonText(text:MedicineType.other),
@@ -201,10 +197,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
     return Row(
       children: [
         Text(AppStrings.time,style: themeData.textTheme.headline6,),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         Expanded(
           child: ToggleButtons(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
                 maxHeight: 70,
                 minHeight: 30
             ),
@@ -229,10 +225,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
               else if(advanceDoseModels.length>1){
                 advanceDoseModels.removeWhere((element) => element.title==title);
               }
-              Log().d("status = ${timingsBool[index]}, timinglist: ${advanceDoseModels.length}");
-              advanceDoseModels.forEach((element) {
-                Log().d("strings: ${element.title}");
-              });
+              MyPrint.printOnConsole("status = ${timingsBool[index]}, timinglist: ${advanceDoseModels.length}");
+              for (AdvanceDoseModel element in advanceDoseModels) {
+                MyPrint.printOnConsole("strings: ${element.title}");
+              }
               mySetState();
             },
             children: <Widget>[
@@ -263,7 +259,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             isAdvanced=!isAdvanced;
             mySetState();
           },
-          child: Text(AppStrings.advance,style: TextStyle(
+          child: const Text(AppStrings.advance,style: TextStyle(
             decoration: TextDecoration.underline,
             color: Colors.blue,
             fontSize: 14,
@@ -321,11 +317,11 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(medicineType==MedicineType.syrup?AppStrings.dosageMl:AppStrings.dosage,style: themeData.textTheme.bodyLarge,),
-              SizedBox(width: 5,),
+              const SizedBox(width: 5,),
               Expanded(
                 child: CommonTextFormField(
                   controller: advanceDoseModels[index].textEditingController,
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   inputFormatter: [
                     FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                   ],
@@ -345,10 +341,10 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
   }
 
   Widget getAdvancedWidget(){
-    Log().d("in single widget length: ${advanceDoseModels.length}");
+    MyPrint.printOnConsole("in single widget length: ${advanceDoseModels.length}");
     return Column(
       children: List.generate(advanceDoseModels.length, (index) {
-        Log().d("in single widget index: $index,title: ${advanceDoseModels[index].title}");
+        MyPrint.printOnConsole("in single widget index: $index,title: ${advanceDoseModels[index].title}");
         return getSingleAdvancedWidget(index: index, title: advanceDoseModels[index].title);
       }),
     );
@@ -360,7 +356,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         border: Border.all(color: themeData.primaryColor,width: 1),
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: const BorderRadius.all(Radius.circular(5)),
           color: themeData.primaryColor.withOpacity(.1)
       ),
       child: Column(
@@ -393,7 +389,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
             ),
           ),
         ),
-        SizedBox(width: 10,),
+        const SizedBox(width: 10,),
         Expanded(
           child: FxButton.small(
             borderRadiusAll: 4,
@@ -431,7 +427,7 @@ class _GetMedicineDialogState extends State<GetMedicineDialog> with MySafeState 
                   totalDose: prescriptionQuantityTextController.text + (medicineType==MedicineType.syrup?" ml":""),
                   doses: prescriptionList,
                 );
-                Log().d("total dose string: ${prescriptionQuantityTextController.text + medicineType==MedicineType.syrup?" ml":""}");
+                MyPrint.printOnConsole("total dose string: ${prescriptionQuantityTextController.text + medicineType==MedicineType.syrup?" ml":""}");
                 Navigator.pop(context,[true,prescriptionModel]);
               }
             },
