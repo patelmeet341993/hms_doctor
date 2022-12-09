@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hms_models/hms_models.dart';
 
+import '../../../configs/app_strings.dart';
 import '../../../controllers/authentication_controller.dart';
 import '../../../packages/flux/styles/shadow.dart';
 import '../../../packages/flux/widgets/card/card.dart';

@@ -9,7 +9,6 @@ import '../providers/admin_user_provider.dart';
 import '../views/authentication/login_screen.dart';
 import '../views/homescreen/homescreen.dart';
 import 'admin_user/admin_user_controller.dart';
-import 'firestore_controller.dart';
 import 'navigation_controller.dart';
 
 class AuthenticationController {

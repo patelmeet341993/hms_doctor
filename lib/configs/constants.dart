@@ -1,5 +1,11 @@
 //App Version
-import 'package:hms_models/configs/constants.dart';
+import 'package:hms_models/hms_models.dart';
+
+import '../views/common/models/home_screen_component_model.dart';
+import '../views/diagnosis/screens/diagnosis_form.dart';
+import '../views/patients/screens/patient_list.dart';
+import '../views/profile/screens/profile_page.dart';
+import 'app_strings.dart';
 
 const String app_version = "1.0.0";
 

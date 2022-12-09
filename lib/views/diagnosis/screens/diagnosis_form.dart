@@ -15,8 +15,9 @@ import 'get_medicine_dialog.dart';
 
 class DiagnosisForm extends StatefulWidget {
   static const String routeName = "/DiagnosisForm";
+  final String title;
 
-  const DiagnosisForm({Key? key}) : super(key: key);
+  const DiagnosisForm({Key? key, this.title = AppStrings.diagnosis}) : super(key: key);
 
   @override
   State<DiagnosisForm> createState() => _DiagnosisFormState();
