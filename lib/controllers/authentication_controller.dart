@@ -36,10 +36,10 @@ class AuthenticationController {
 
       if(documentSnapshot.exists && (documentSnapshot.data() ?? {}).isNotEmpty) {
         AdminUserModel newModel = AdminUserModel.fromMap(documentSnapshot.data()!);
-        if(adminUserModel.username == newModel.username && adminUserModel.password == newModel.password) {
+        if(adminUserModel.username == newModel.username && adminUserModel.password == newModel.password && newModel.isActive) {
           adminUserProvider.setAdminUserModel(newModel);
           if(adminUserModel != newModel) {
-            SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, jsonEncode(newModel.toMap()));
+            SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, jsonEncode(newModel.toMap(toJson: true)));
           }
           return newModel;
         }
@@ -80,12 +80,13 @@ class AuthenticationController {
     if(userTypes.isNotEmpty) {
       query = query.where("role", whereIn: userTypes);
     }
+
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await query.get();
     if(querySnapshot.docs.isNotEmpty) {
       DocumentSnapshot<Map<String, dynamic>> docSnapshot = querySnapshot.docs.first;
       if((docSnapshot.data() ?? {}).isNotEmpty) {
         AdminUserModel model = AdminUserModel.fromMap(docSnapshot.data()!);
-        isLoginSuccess = model.username == userName && model.password == password && userTypes.contains(model.role);
+        isLoginSuccess = model.username == userName && model.password == password && userTypes.contains(model.role) && model.isActive;
         if(isLoginSuccess) {
           adminUserModel = model;
         }
@@ -93,8 +94,9 @@ class AuthenticationController {
     }
     
     AdminUserProvider adminUserProvider = Provider.of<AdminUserProvider>(NavigationController.mainScreenNavigator.currentContext!, listen: false);
+    adminUserProvider.setAdminUserId(adminUserModel?.id ?? "", isNotify: false);
     adminUserProvider.setAdminUserModel(adminUserModel, isNotify: false);
-    SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, adminUserModel != null ? jsonEncode(adminUserModel.toMap()) : "");
+    SharedPrefManager().setString(SharePrefrenceKeys.loggedInUser, adminUserModel != null ? jsonEncode(adminUserModel.toMap(toJson: true)) : "");
 
     if(isLoginSuccess) {
       Navigator.pushNamedAndRemoveUntil(context, HomeScreen.routeName, (route) => false);
